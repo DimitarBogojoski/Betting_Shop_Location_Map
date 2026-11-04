@@ -1,0 +1,22 @@
+.gallery-carousel {
+    max-width: 1000px;
+    margin: 0 auto;
+    border-radius: 16px;
+    overflow: hidden;
+    background-color: #17212b;
+}
+
+.gallery-carousel .carousel-item img {
+    height: clamp(250px, 50vw, 550px);
+    object-fit: contain;
+}
+
+/* Make arrows easier to see over light images */
+.gallery-carousel .carousel-control-prev-icon,
+.gallery-carousel .carousel-control-next-icon {
+    background-color: rgba(0, 0, 0, 0.55);
+    background-size: 60%;
+    border-radius: 50%;
+    width: 42px;
+    height: 42px;
+}
