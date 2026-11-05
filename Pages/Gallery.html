@@ -1,0 +1,106 @@
+<section class="container-fluid py-5 mb-0" aria-labelledby="gallery-title">
+    <h1 id="gallery-title" class="text-center mb-4">
+        Галерија
+    </h1>
+    <!--Bt-->
+    <div
+            id="galleryCarousel"
+            class="carousel slide gallery-carousel"
+            role="region"
+            aria-label="Фотографии од галеријата"
+    >
+        <div class="carousel-indicators">
+            <button
+                    type="button"
+                    data-bs-target="#galleryCarousel"
+                    data-bs-slide-to="0"
+                    class="active"
+                    aria-current="true"
+                    aria-label="Фотографија 1"
+            ></button>
+
+            <button
+                    type="button"
+                    data-bs-target="#galleryCarousel"
+                    data-bs-slide-to="1"
+                    aria-label="Фотографија 2"
+            ></button>
+
+            <button
+                    type="button"
+                    data-bs-target="#galleryCarousel"
+                    data-bs-slide-to="2"
+                    aria-label="Фотографија 3"
+            ></button>
+
+            <button
+                    type="button"
+                    data-bs-target="#galleryCarousel"
+                    data-bs-slide-to="3"
+                    aria-label="Фотографија 4"
+            ></button>
+        </div>
+
+        <!-- Img -->
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img
+                        src="Images/Clubs/M1.jpg"
+                        class="d-block w-100"
+                        alt="Фотографија 1 од галеријата">
+            </div>
+
+            <div class="carousel-item">
+                <img
+                        src="Images/Clubs/M2.webp"
+                        class="d-block w-100"
+                        alt="Фотографија 2 од галеријата"
+                >
+            </div>
+
+            <div class="carousel-item">
+                <img
+                        src="Images/Clubs/SL.webp"
+                        class="d-block w-100"
+                        alt="Фотографија 3 од галеријата"
+                >
+            </div>
+
+            <div class="carousel-item">
+                <img
+                        src="Images/Clubs/ZK.jpg"
+                        class="d-block w-100"
+                        alt="Фотографија 4 од галеријата"
+                >
+            </div>
+        </div>
+
+        <!--Prew-->
+        <button
+                class="carousel-control-prev"
+                type="button"
+                data-bs-target="#galleryCarousel"
+                data-bs-slide="prev"
+        >
+            <span
+                    class="carousel-control-prev-icon"
+                    aria-hidden="true"
+            ></span>
+            <span class="visually-hidden">Претходна фотографија</span>
+        </button>
+
+        <!--Next-->
+        <button
+                class="carousel-control-next"
+                type="button"
+                data-bs-target="#galleryCarousel"
+                data-bs-slide="next"
+        >
+            <span
+                    class="carousel-control-next-icon"
+                    aria-hidden="true"
+            ></span>
+            <span class="visually-hidden">Следна фотографија</span>
+        </button>
+    </div>
+</section>

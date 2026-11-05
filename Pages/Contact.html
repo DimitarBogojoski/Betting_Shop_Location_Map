@@ -1,0 +1,107 @@
+<section class="contact-page" aria-labelledby="contact-title">
+    <h1 id="contact-title" class="text-center mb-0">
+        Контакт
+    </h1>
+
+    <hr class="contact-divider">
+
+    <div class="container py-4">
+        <div class="row g-4">
+
+            <div class="col-12 col-lg-6">
+                <form id="contact-form">
+                    <div class="mb-3">
+                        <label for="contact-name" class="form-label">
+                            Име
+                        </label>
+                        <input
+                                type="text"
+                                class="form-control"
+                                id="contact-name"
+                                placeholder="Вашето име"
+                                required
+                        >
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="contact-email" class="form-label">
+                            Е-пошта
+                        </label>
+                        <input
+                                type="email"
+                                class="form-control"
+                                id="contact-email"
+                                name="email"
+                                placeholder="Вашата е-пошта"
+                                autocomplete="email"
+                                required
+                        >
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="contact-subject" class="form-label">
+                            Тема
+                        </label>
+                        <input
+                                type="text"
+                                class="form-control"
+                                id="contact-subject"
+                                name="subject"
+                                placeholder="Вашата тема"
+                                required
+                        >
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="contact-message" class="form-label">
+                            Порака
+                        </label>
+                        <textarea
+                                class="form-control"
+                                id="contact-message"
+                                name="message"
+                                rows="5"
+                                placeholder="Вашата порака"
+                                required
+                        ></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <img src="Images/Icons/icons8-rocket-50.png" class="small-icons">
+                        Прати
+                    </button>
+                </form>
+            </div>
+
+            <!-- Right: Map and contact information -->
+            <div class="col-12 col-lg-6">
+                <div id="contact-map" aria-label="Мапа со локацијата на канцеларијата">
+                </div>
+
+                <address class="contact-details mt-4 mb-0">
+                    <div class="d-flex gap-1">
+                    <img src="/Images/Icons/icons8-location-pin-50.png" alt="" class="small-icons gap-1 mt-1">
+                    <p>
+                        Булевар Свети Климент Охридски 58б/2-4,
+                        Скопје 1000
+                    </p>
+                    </div>
+                    <div class="d-flex gap-1">
+                    <img src="/Images/Icons/icons8-phone-50.png" alt="" class="small-icons gap-1 mt-1">
+                    <p>
+                        Телефон:
+                        <a href="tel:023136359">02 313 6359</a>
+                    </p>
+                    </div>
+                    <div class="d-flex gap-1">
+                    <img src="/Images/Icons/icons8-mails-64.png" alt="" class="small-icons gap-1 mt-1">
+                    <p class="mb-0">
+                        Е-пошта: office@kaldilnici.com.mk
+                    </p>
+                    </div>
+                </address>
+            </div>
+
+        </div>
+    </div>
+</section>
