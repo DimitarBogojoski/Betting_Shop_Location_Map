@@ -1,5 +1,5 @@
 <section class="contact-page" aria-labelledby="contact-title">
-    <h1 id="contact-title" class="text-center mb-0">
+    <h1 id="contact-title" class="text-center mb-0" data-i18n="contact">
         Контакт
     </h1>
 
@@ -11,7 +11,7 @@
             <div class="col-12 col-lg-6">
                 <form id="contact-form">
                     <div class="mb-3">
-                        <label for="contact-name" class="form-label">
+                        <label for="contact-name" class="form-label" data-i18n="name">
                             Име
                         </label>
                         <input
@@ -19,12 +19,13 @@
                                 class="form-control"
                                 id="contact-name"
                                 placeholder="Вашето име"
+                                data-i18n-placeholder="yourName"
                                 required
                         >
                     </div>
 
                     <div class="mb-3">
-                        <label for="contact-email" class="form-label">
+                        <label for="contact-email" class="form-label" data-i18n="email">
                             Е-пошта
                         </label>
                         <input
@@ -34,12 +35,13 @@
                                 name="email"
                                 placeholder="Вашата е-пошта"
                                 autocomplete="email"
+                                data-i18n-placeholder="yourEmail"
                                 required
                         >
                     </div>
 
                     <div class="mb-3">
-                        <label for="contact-subject" class="form-label">
+                        <label for="contact-subject" class="form-label" data-i18n="subject">
                             Тема
                         </label>
                         <input
@@ -48,12 +50,14 @@
                                 id="contact-subject"
                                 name="subject"
                                 placeholder="Вашата тема"
+                                autocomplete="subject"
+                                data-i18n-placeholder="yourSubject"
                                 required
                         >
                     </div>
 
                     <div class="mb-3">
-                        <label for="contact-message" class="form-label">
+                        <label for="contact-message" class="form-label" data-i18n="message">
                             Порака
                         </label>
                         <textarea
@@ -62,11 +66,12 @@
                                 name="message"
                                 rows="5"
                                 placeholder="Вашата порака"
+                                data-i18n-placeholder="yourMessage"
                                 required
                         ></textarea>
                     </div>
 
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn bt-color" data-i18n="send">
                         <img src="Images/Icons/icons8-rocket-50.png" class="small-icons">
                         Прати
                     </button>

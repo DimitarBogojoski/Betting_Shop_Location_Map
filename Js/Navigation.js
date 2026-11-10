@@ -8,25 +8,6 @@ navigationSidebar.querySelectorAll(".nav-link").forEach((link) => {
     });
 });
 
-//Update lang
-const selectedLanguageFlag = document.getElementById(
-    "selected-language-flag"
-);
-
-const selectedLanguageLabel = document.getElementById(
-    "selected-language-label"
-);
-
-document.querySelectorAll(".language-option").forEach((button) => {
-    button.addEventListener("click", () => {
-        const language = button.dataset.language;
-
-        selectedLanguageFlag.src = button.dataset.flag;
-        selectedLanguageLabel.textContent = language;
-
-        // Add actual page-translation logic here later.
-    });
-});
 
 //Changes the page
 const mainContent = document.getElementById("main-content");
@@ -71,9 +52,16 @@ async function loadPage() {
 
         mainContent.innerHTML = html;
 
+// Translate the newly inserted HTML.
+        window.applyTranslations(mainContent);
+
 // Initialize the main map.
         if (document.getElementById("map-view")) {
             await window.initMapPage();
+        }
+// Initialize the table
+        if (document.getElementById("objects-table-body")) {
+            void window.loadObjectsTableData();
         }
 
 // Initialize the contact map.

@@ -8,15 +8,17 @@ const OBLOZUVALNICI_URL =
 
 
 window.destroyMapPage = function () {
-
     mapInitId++;
 
     if (mapView) {
+        if (window.objectsMapView === mapView) {
+            window.objectsMapView = null;
+        }
+
         mapView.destroy();
         mapView = null;
     }
 };
-
 
 window.initMapPage = async function () {
 
@@ -39,7 +41,8 @@ window.initMapPage = async function () {
             Search,
             LayerList,
             Expand,
-            Home
+            Home,
+            ElevationProfile
         ] = await $arcgis.import([
 
             "@arcgis/core/Map.js",
@@ -49,8 +52,8 @@ window.initMapPage = async function () {
             "@arcgis/core/widgets/Search.js",
             "@arcgis/core/widgets/LayerList.js",
             "@arcgis/core/widgets/Expand.js",
-            "@arcgis/core/widgets/Home.js"
-
+            "@arcgis/core/widgets/Home.js",
+            "@arcgis/core/widgets/ElevationProfile.js"
         ]);
 
         if (
@@ -144,6 +147,7 @@ window.initMapPage = async function () {
         });
 
         mapView = view;
+        window.objectsMapView = view;
 
         await view.when();
 
@@ -323,6 +327,9 @@ window.initMapPage = async function () {
 
         ];
 
+        legend.style.position = "relative";
+        legend.style.top = "10px";
+
         view.ui.add(legend, "bottom-left");
 
 
@@ -363,6 +370,18 @@ window.initMapPage = async function () {
         view.ui.add(printExpand, "bottom-right");
 
 
+        //EVAL PROF
+        const elevationProfile = createMapComponent(
+            "arcgis-elevation-profile");
+
+        const elevationExpand = createMapComponent("arcgis-expand", {
+            expandTooltip: "Elevation Profile"
+        });
+
+        elevationExpand.append(elevationProfile);
+        view.ui.add(elevationExpand, "bottom-right");
+
+
         const locate = createMapComponent(
             "arcgis-locate"
         );
@@ -397,3 +416,4 @@ window.initMapPage = async function () {
     }
 
 };
+

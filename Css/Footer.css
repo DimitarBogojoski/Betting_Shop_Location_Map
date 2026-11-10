@@ -30,6 +30,7 @@
 }
 
 .bg-footer{
-    background: #fbdac8;
+    background: #C8E9FB;
+    background: linear-gradient(90deg, rgba(200, 233, 251, 1) 0%, rgba(251, 218, 200, 1) 100%);
     border-top: 1px solid #a3a3a3;
 }

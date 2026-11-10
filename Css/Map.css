@@ -1,49 +1,45 @@
 
 .map-page {
     width: 100%;
-    height: calc(100vh - 135px);
     min-height: 480px;
     position: relative;
     overflow: hidden;
 }
 
 .map-view {
-    width: 100%;
-    height: 100%;
+    height: 75%;
     min-height: 480px;
 }
 
-/* Legend */
-.map-view .esri-legend {
-    background: #fff;
-    padding: 12px 15px;
-    min-width: 280px;
-    font-family: Arial, sans-serif;
+.objects-section {
+    width: 90%;
+    margin-inline: auto;
 }
 
-/* Map controls */
-.map-view .esri-widget {
-    font-family: Arial, sans-serif;
+.objects-table th {
+    white-space: nowrap;
 }
 
-/* Search */
-.map-view .esri-search {
-    width: 300px;
+.objects-table th:first-child {
+    width: 140px;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
+.objects-pagination {
+    max-width: 100%;
+    overflow-x: auto;
+    padding-bottom: 4px;
+}
 
-    .map-page {
-        height: calc(100vh - 120px);
-        min-height: 400px;
-    }
+.objects-pagination .page-link {
+    min-width: 32px;
+    text-align: center;
+}
 
-    .map-view .esri-search {
-        width: 220px;
-    }
+.object-table-row {
+    cursor: pointer;
+}
 
-    .map-view .esri-legend {
-        min-width: 200px;
-    }
+.object-table-row:focus-visible {
+    outline: 2px solid #0d6efd;
+    outline-offset: -2px;
 }

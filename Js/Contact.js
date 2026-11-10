@@ -5,6 +5,10 @@ window.destroyContactPage = function () {
     initializationId++;
 
     if (contactView) {
+        if (window.objectsMapView === contactView) {
+            window.objectsMapView = null;
+        }
+
         contactView.destroy();
         contactView = null;
     }
