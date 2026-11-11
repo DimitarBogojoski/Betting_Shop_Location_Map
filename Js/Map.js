@@ -1,6 +1,7 @@
 
 let mapView = null;
 let mapInitId = 0;
+let mapLanguageHandler = null;
 
 const OBLOZUVALNICI_URL =
     "https://gisserver.gdi.mk/arcgis/rest/services/KLADILNICI/KLADILNICI_KAZINA_MK/MapServer/1";
@@ -9,6 +10,15 @@ const OBLOZUVALNICI_URL =
 
 window.destroyMapPage = function () {
     mapInitId++;
+
+    if (mapLanguageHandler) {
+        document.removeEventListener(
+            "site-language-changed",
+            mapLanguageHandler
+        );
+
+        mapLanguageHandler = null;
+    }
 
     if (mapView) {
         if (window.objectsMapView === mapView) {
@@ -76,7 +86,7 @@ window.initMapPage = async function () {
 
             url: OBLOZUVALNICI_URL,
 
-            title: "Кладилници во радиус од 400м",
+            title: window.t("bettingShops"),
 
             outFields: ["ime", "adresa", "grad"],
 
@@ -114,7 +124,7 @@ window.initMapPage = async function () {
 //SKETCH
         const sketchGraphicsLayer = new GraphicsLayer({
 
-            title: "Мои цртежи",
+            title: window.t("drawings"),
 
             listMode: "hide"
 
@@ -311,7 +321,8 @@ window.initMapPage = async function () {
         view.ui.add(bookmarksExpand, "top-left");
 //HOME
         const home = new Home({
-            view: view
+            view: view,
+            label: window.t("homeW")
         });
 
         view.ui.add(home, "top-left");
@@ -322,7 +333,7 @@ window.initMapPage = async function () {
 
             {
                 layer: OblozuvalnicaLayer,
-                title: "Кладилници во радиус од 400м"
+                title: window.t("Legend")
             }
 
         ];
@@ -353,7 +364,10 @@ window.initMapPage = async function () {
 
 
         const compass = createMapComponent(
-            "arcgis-compass"
+            "arcgis-compass",
+            {
+                label: window.t("compass")
+            }
         );
 
         view.ui.add(compass, "top-right");
@@ -383,7 +397,10 @@ window.initMapPage = async function () {
 
 
         const locate = createMapComponent(
-            "arcgis-locate"
+            "arcgis-locate",
+            {
+                label: window.t("locate")
+            }
         );
 
         view.ui.add(locate, "bottom-right");
@@ -399,6 +416,121 @@ window.initMapPage = async function () {
 
         view.ui.add(scaleBar, "bottom-right");
 
+
+        function updateMapTranslations() {
+            if (
+                thisInit !== mapInitId ||
+                !container.isConnected ||
+                mapView !== view
+            ) {
+                return;
+            }
+
+            // Layer titles used by the layer list and legend.
+            OblozuvalnicaLayer.title = window.t("bettingShops");
+            sketchGraphicsLayer.title = window.t("drawings");
+
+            // Reassign the popup template with translated field labels.
+            OblozuvalnicaLayer.popupTemplate = {
+                title: "{ime}",
+
+                content: [
+                    {
+                        type: "fields",
+
+                        fieldInfos: [
+                            {
+                                fieldName: "ime",
+                                label: window.t("name")
+                            },
+                            {
+                                fieldName: "adresa",
+                                label: window.t("addressW")
+                            },
+                            {
+                                fieldName: "grad",
+                                label: window.t("city")
+                            }
+                        ]
+                    }
+                ]
+            };
+
+            legend.layerInfos = [
+                {
+                    layer: OblozuvalnicaLayer,
+                    title: window.t("bettingShops")
+                }
+            ];
+
+            // Works with your Expand widgets and components.
+            const expandableTools = [
+                [searchExpand, "search"],
+                [layerListExpand, "layers"],
+                [basemapGalleryExpand, "basemaps"],
+                [measurementExpand, "distance"],
+                [areaExpand, "area"],
+                [bookmarksExpand, "bookmarks"],
+                [printExpand, "print"],
+                [elevationExpand, "elevation"]
+            ];
+
+            expandableTools.forEach(([expand, key]) => {
+                const tool = window.t(key);
+
+                expand.label = tool;
+                expand.expandTooltip = tool;
+
+                expand.collapseTooltip = window.t("closeTool", {
+                    tool
+                });
+            });
+
+            // Public labels for the legacy widgets.
+            search.label = window.t("search");
+            layerList.label = window.t("layers");
+            compass.label = window.t("compass");
+            locate.label = window.t("locate");
+            home.label = window.t("homeW");
+
+
+            // Public labels and host-level hover text for components.
+            // These do not translate buttons inside their interfaces.
+            const components = [
+                [basemapGallery, "basemaps"],
+                [distanceMeasurement, "distance"],
+                [areaMeasurement, "area"],
+                [bookmarks, "bookmarks"],
+                [legend, "legend"],
+                [sketch, "sketch"],
+                [coordinateConversion, "coordinates"],
+                [compass, "compass"],
+                [print, "print"],
+                [elevationProfile, "elevation"],
+                [locate, "locate"],
+                [scaleBar, "scale"]
+            ];
+
+            components.forEach(([component, key]) => {
+                const text = window.t(key);
+
+                component.label = text;
+                component.setAttribute("aria-label", text);
+                component.setAttribute("title", text);
+                });
+        }
+
+        // Apply the selected language when the map finishes loading.
+        updateMapTranslations();
+
+        // Update labels without recreating the map.
+        mapLanguageHandler = updateMapTranslations;
+
+        document.addEventListener(
+            "site-language-changed",
+            mapLanguageHandler
+        );
+
     } catch (error) {
 
         if (
@@ -410,9 +542,7 @@ window.initMapPage = async function () {
 
         console.error("Map initialization failed:", error);
 
-        container.textContent =
-            "Мапата не може да се вчита. Проверете ја конзолата.";
-
+        container.textContent = window.t("mapError");
     }
 
 };

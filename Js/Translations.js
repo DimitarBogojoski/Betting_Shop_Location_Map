@@ -25,6 +25,7 @@
             objectId: "OBJECT ID",
             objectName: "ИМЕ",
             address: "АДРЕСА",
+            addressW: "Адреса",
             search: "Пребарај",
             searchHelp: "Внесете најмалку 3 знаци за пребарување.",
             rowsPerPage: "Редови по страница:",
@@ -41,7 +42,33 @@
 
             pageNotFound: "Страницата не е пронајдена.",
             pageLoadError:
-                "Грешка при вчитување на страницата. Обидете се повторно."
+                "Грешка при вчитување на страницата. Обидете се повторно.",
+
+            searchW: "Пребарување",
+            layers: "Слоеви",
+            basemaps: "Основни карти",
+            distance: "Мерење растојание",
+            area: "Мерење површина",
+            bookmarks: "Обележувачи",
+            homeW: "Почетен приказ",
+            legend: "Легенда",
+            sketch: "Цртање",
+            coordinates: "Конверзија на координати",
+            compass: "Ресетирај ја ориентацијата на картата",
+            print: "Печатење карта",
+            elevation: "Висински профил",
+            locate: "Најди ја мојата локација",
+            scale: "Размер",
+            closeTool: "Затвори: {tool}",
+
+            bettingShops: "Кладилници во радиус од 400м",
+            drawings: "Мои цртежи",
+            city: "Град",
+
+            mapError:
+                "Мапата не може да се вчита. Проверете ја конзолата.",
+            sortAscending: "Подреди растечки",
+            sortDescending: "Подреди опаѓачки",
         },
 
         EN: {
@@ -69,6 +96,7 @@
             objectId: "OBJECT ID",
             objectName: "NAME",
             address: "ADDRESS",
+            addressW: "Address",
             search: "Search",
             searchHelp: "Enter at least 3 characters to search.",
             rowsPerPage: "Rows per page:",
@@ -85,7 +113,33 @@
 
             pageNotFound: "Page not found.",
             pageLoadError:
-                "Failed to load the page. Please try again."
+                "Failed to load the page. Please try again.",
+
+            searchW: "Search",
+            layers: "Layers",
+            basemaps: "Basemap gallery",
+            distance: "Measure distance",
+            area: "Measure area",
+            bookmarks: "Bookmarks",
+            homeW: "Home",
+            legend: "Legend",
+            sketch: "Sketch",
+            coordinates: "Coordinate conversion",
+            compass: "Reset map orientation",
+            print: "Print map",
+            elevation: "Elevation profile",
+            locate: "Find my location",
+            scale: "Scale bar",
+            closeTool: "Close: {tool}",
+
+            bettingShops: "Betting shops within a 400m radius",
+            drawings: "My drawings",
+            city: "City",
+
+            mapError:
+                "The map could not be loaded. Check the console.",
+            sortAscending: "Sort ascending",
+            sortDescending: "Sort descending",
         },
 
         SQ: {
@@ -113,6 +167,7 @@
             objectId: "OBJECT ID",
             objectName: "EMRI",
             address: "ADRESA",
+            addressW: "Adresa",
             search: "Kërko",
             searchHelp: "Shkruani të paktën 3 karaktere për të kërkuar.",
             rowsPerPage: "Rreshta për faqe:",
@@ -129,7 +184,33 @@
 
             pageNotFound: "Faqja nuk u gjet.",
             pageLoadError:
-                "Gabim gjatë ngarkimit të faqes. Provoni përsëri."
+                "Gabim gjatë ngarkimit të faqes. Provoni përsëri.",
+
+            searchW: "Kërkim",
+            layers: "Shtresat",
+            basemaps: "Hartat bazë",
+            distance: "Mat distancën",
+            area: "Mat sipërfaqen",
+            bookmarks: "Faqeshënuesit",
+            homeW: "Pamja fillestare",
+            legend: "Legjenda",
+            sketch: "Vizatim",
+            coordinates: "Konvertimi i koordinatave",
+            compass: "Rivendos orientimin e hartës",
+            print: "Printo hartën",
+            elevation: "Profili i lartësisë",
+            locate: "Gjej vendndodhjen time",
+            scale: "Shkalla",
+            closeTool: "Mbyll: {tool}",
+
+            bettingShops: "Pika bastesh brenda një rrezeje prej 400 metrash",
+            drawings: "Vizatimet e mia",
+            city: "Qyteti",
+
+            mapError:
+                "Harta nuk mund të ngarkohet. Kontrolloni konsolën.",
+            sortAscending: "Rendit rritës",
+            sortDescending: "Rendit zbritës"
         }
     };
 
@@ -152,9 +233,7 @@
 
     try {
         savedLanguage = localStorage.getItem("site-language") || "MK";
-    } catch {
-        // The language switch still works if storage is unavailable.
-    }
+    } catch {}
 
     let currentLanguage = Object.hasOwn(translations, savedLanguage)
         ? savedLanguage
@@ -204,9 +283,7 @@
 
         try {
             localStorage.setItem("site-language", language);
-        } catch {
-            // Ignore storage restrictions.
-        }
+        } catch {}
 
         document.documentElement.lang =
             languageSettings[language].htmlLang;
@@ -236,7 +313,6 @@
         );
     };
 
-    // Uses the data-language attributes already present in your HTML.
     document.querySelectorAll("[data-language]").forEach((button) => {
         button.addEventListener("click", () => {
             window.setSiteLanguage(button.dataset.language);

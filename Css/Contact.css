@@ -26,9 +26,10 @@
 }
 
 .bt-color{
-    background: #0e03a8;
-    background: linear-gradient(0deg, rgba(14, 3, 168, 1) 0%, rgba(17, 0, 255, 1) 100%);
+    background: #4c9bba;
+    background: linear-gradient(0deg, rgba(76, 155, 186, 1) 0%, rgba(0, 170, 255, 1) 100%);
 }
+
 
 #contact-map {
     width: 100%;

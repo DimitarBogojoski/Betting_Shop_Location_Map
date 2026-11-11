@@ -41,15 +41,6 @@ window.loadObjectsTableData = async function () {
 
         await layer.load();
 
-        // Print the actual service fields for troubleshooting.
-        console.table(
-            layer.fields.map((field) => ({
-                name: field.name,
-                alias: field.alias,
-                type: field.type
-            }))
-        );
-
         function normalize(value) {
             return String(value ?? "")
                 .normalize("NFKC")
@@ -108,19 +99,6 @@ window.loadObjectsTableData = async function () {
                 returnGeometry: false
             });
 
-            // Split the batch if the service's response limit is reached.
-            if (result.exceededTransferLimit) {
-                if (ids.length <= 1) {
-                    throw new Error("Серверот го ограничи резултатот.");
-                }
-
-                const middle = Math.ceil(ids.length / 2);
-
-                return [
-                    ...await fetchBatch(ids.slice(0, middle)),
-                    ...await fetchBatch(ids.slice(middle))
-                ];
-            }
 
             return result.features.map((feature) => ({
                 objectId: feature.attributes[idField],
@@ -206,15 +184,6 @@ window.selectObjectOnMap = async function (record) {
             outSpatialReference: view.spatialReference
         });
 
-        // Ignore an older click if a newer selection was made.
-        if (
-            selectionId !== tableSelectionId ||
-            view.destroyed ||
-            window.objectsMapView !== view
-        ) {
-            return;
-        }
-
         const sourceFeature = result.features[0];
 
         if (!sourceFeature?.geometry) {
@@ -231,7 +200,6 @@ window.selectObjectOnMap = async function (record) {
         }
 
 // Create a standalone graphic.
-// It does not depend on the temporary query layer.
         const feature = new Graphic({
             geometry: sourceFeature.geometry.clone(),
 
@@ -250,14 +218,6 @@ window.selectObjectOnMap = async function (record) {
                         type: "fields",
 
                         fieldInfos: [
-                            {
-                                fieldName: "tableObjectId",
-                                label: "OBJECT ID",
-                                format: {
-                                    places: 0,
-                                    digitSeparator: false
-                                }
-                            },
                             {
                                 fieldName: "tableName",
                                 label: "Име"

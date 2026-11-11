@@ -21,6 +21,34 @@ window.initObjectsTable = function (records = []) {
         Math.ceil(filteredRecords.length / pageSize)
     );
 
+    let sortKey = "objectId";
+    let sortDirection = "asc";
+
+    const textCollator = new Intl.Collator("mk", {
+        numeric: true,
+        sensitivity: "base"
+    });
+
+    function sortRecords() {
+        const direction = sortDirection === "asc" ? 1 : -1;
+
+        filteredRecords = [...filteredRecords].sort((a, b) => {
+            if (sortKey === "objectId") {
+                const first = Number(a.objectId);
+                const second = Number(b.objectId);
+
+                if (Number.isFinite(first) && Number.isFinite(second)) {
+                    return (first - second) * direction;
+                }
+            }
+
+            const first = String(a[sortKey] ?? "");
+            const second = String(b[sortKey] ?? "");
+
+            return textCollator.compare(first, second) * direction;
+        });
+    }
+
     function addPageButton(label, page, options = {}) {
         const li = document.createElement("li");
         li.className = "page-item";
@@ -47,11 +75,6 @@ window.initObjectsTable = function (records = []) {
         button.addEventListener("click", () => {
             currentPage = page;
             render();
-
-            // Restore keyboard focus after rebuilding the pagination.
-            pagination
-                .querySelector('[aria-current="page"]')
-                ?.focus({ preventScroll: true });
         });
 
         li.appendChild(button);
@@ -260,7 +283,6 @@ window.initObjectsTable = function (records = []) {
 
         if (query.length < 3) {
             filteredRecords = records;
-
         } else {
             filteredRecords = records.filter((record) =>
                 [
@@ -271,10 +293,10 @@ window.initObjectsTable = function (records = []) {
                     normalizeSearch(value).includes(query)
                 )
             );
-
         }
 
-        // Reset pagination after changing the search.
+        sortRecords();
+
         currentPage = 1;
 
         totalPages = Math.max(
@@ -320,6 +342,7 @@ window.initObjectsTable = function (records = []) {
             return;
         }
 
+        updateSortHeaders();
         render();
     };
 
@@ -327,6 +350,65 @@ window.initObjectsTable = function (records = []) {
         "site-language-changed",
         window.objectsTableLanguageHandler
     );
+
+    // Sortable table headers.
+    document
+        .querySelectorAll(".objects-table th[data-sort-key]")
+        .forEach((header) => {
+            const button = header.querySelector(
+                ".objects-sort-button"
+            );
+
+            if (!button) {
+                return;
+            }
+
+            button.addEventListener("click", () => {
+                const key = header.dataset.sortKey;
+
+                if (sortKey === key) {
+                    sortDirection =
+                        sortDirection === "asc" ? "desc" : "asc";
+                } else {
+                    sortKey = key;
+                    sortDirection = "asc";
+                }
+
+                sortRecords();
+
+                currentPage = 1;
+
+                totalPages = Math.max(
+                    1,
+                    Math.ceil(filteredRecords.length / pageSize)
+                );
+
+                updateSortHeaders();
+
+                render();
+            });
+        });
+
+    function updateSortHeaders() {
+        document
+            .querySelectorAll(".objects-table th[data-sort-key]")
+            .forEach((header) => {
+                const isCurrent = header.dataset.sortKey === sortKey;
+
+                if (isCurrent) {
+                    header.setAttribute(
+                        "aria-sort",
+                        sortDirection === "asc"
+                            ? "ascending"
+                            : "descending"
+                    );
+                } else {
+                    header.removeAttribute("aria-sort");
+                }
+            });
+    }
+
+    updateSortHeaders();
 
     // Initial table display.
     applySearch();
