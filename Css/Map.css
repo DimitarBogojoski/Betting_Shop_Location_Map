@@ -1,19 +1,21 @@
 
 .map-page {
     width: 100%;
-    min-height: 480px;
+    min-height: 650px;
+    height: 100%;
     position: relative;
     overflow: hidden;
 }
 
 .map-view {
     height: 75%;
-    min-height: 480px;
+    min-height: 650px;
 }
 
 .objects-section {
-    width: 90%;
-    margin-inline: auto;
+    width: 95%;
+    margin-left: 50px;
+    /*margin-right: 50px;*/
 }
 
 .objects-table th {

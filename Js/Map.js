@@ -50,9 +50,7 @@ window.initMapPage = async function () {
             GraphicsLayer,
             Search,
             LayerList,
-            Expand,
-            Home,
-            ElevationProfile
+            Home
         ] = await $arcgis.import([
 
             "@arcgis/core/Map.js",
@@ -61,9 +59,7 @@ window.initMapPage = async function () {
             "@arcgis/core/layers/GraphicsLayer.js",
             "@arcgis/core/widgets/Search.js",
             "@arcgis/core/widgets/LayerList.js",
-            "@arcgis/core/widgets/Expand.js",
-            "@arcgis/core/widgets/Home.js",
-            "@arcgis/core/widgets/ElevationProfile.js"
+            "@arcgis/core/widgets/Home.js"
         ]);
 
         if (
@@ -71,6 +67,17 @@ window.initMapPage = async function () {
             !container.isConnected
         ) {
             return;
+        }
+
+        function createExpand({content, icon, translationKey})
+        {
+            const expand = createMapComponent("arcgis-expand", {
+                expandIcon: icon
+            });
+
+            expand.append(content);
+            expand.dataset.translationKey = translationKey;
+            return expand;
         }
 
 
@@ -92,6 +99,16 @@ window.initMapPage = async function () {
 
             listMode: "show",
 
+            renderer:{
+                type: "simple",
+
+                symbol:{
+                    type: "picture-marker",
+                    url: "Images/SoccerBall.png",
+                    width: "18px",
+                    height: "18px"
+                }
+            },
 
             popupTemplate: {
                 title: "{ime}",
@@ -156,6 +173,8 @@ window.initMapPage = async function () {
 
         });
 
+        view.ui.remove("zoom");
+
         mapView = view;
         window.objectsMapView = view;
 
@@ -212,45 +231,47 @@ window.initMapPage = async function () {
 
             return component;
         }
+//ZOOM
+
+        const Zoom = createMapComponent("arcgis-zoom", {
+            label: window.t("zoom"),
+        });
+        Zoom.messageOverrides = {
+            zoomIn: window.t("zoomIn"),
+            zoomOut: window.t("zoomOut")
+        };
 
 //SEARCH
+        const searchContainer = document.createElement("div");
+
         const search = new Search({
-            view: view
-        });
-        const searchExpand = new Expand({
-
             view: view,
-
-            content: search,
-
-            expandIcon: "search",
-
-            expandTooltip: "Search",
-
+            container: searchContainer,
+            placeholder: window.t("searchPlaceholder")
         });
 
-        view.ui.add(searchExpand, "top-left");
+        const searchExpand = createExpand({
+            content: searchContainer,
+            icon: "search",
+            translationKey: "search"
+        });
+
+
 
 //LAYER LIST
+        const layerListContainer = document.createElement("div");
+
         const layerList = new LayerList({
-
-            view: view
-
-        });
-        const layerListExpand = new Expand({
-
             view: view,
-
-            content: layerList,
-
-            expandIcon: "layers",
-
-            expandTooltip: "Layers",
-
-
+            container: layerListContainer
         });
 
-        view.ui.add(layerListExpand, "top-left");
+        const layerListExpand = createExpand({
+            content: layerListContainer,
+            icon: "layers",
+            translationKey: "layers"
+        });
+
 
 //BASEMAP LIST
         const basemapGallery = createMapComponent(
@@ -260,16 +281,13 @@ window.initMapPage = async function () {
         basemapGallery.style.maxWidth = "calc(100vw - 90px)";
         basemapGallery.style.maxHeight = "65vh";
 
-        const basemapGalleryExpand = createMapComponent("arcgis-expand", {
-            expandIcon: "basemap",
-            expandTooltip: "Basemap Gallery",
-            mode: "floating",
-            placement: "right-start"
+        const basemapGalleryExpand = createExpand({
+            content: basemapGallery,
+            icon: "basemap",
+            translationKey: "basemaps"
         });
 
-        basemapGalleryExpand.append(basemapGallery);
 
-        view.ui.add(basemapGalleryExpand, "top-left");
 
 //DISTANCE MEASUREMENT
         const distanceMeasurement = createMapComponent(
@@ -279,14 +297,13 @@ window.initMapPage = async function () {
             }
         );
 
-        const measurementExpand = createMapComponent("arcgis-expand", {
-            expandIcon: "measure",
-            expandTooltip: "Distance Measurement",
-
+        const measurementExpand = createExpand({
+            content: distanceMeasurement,
+            icon: "measure",
+            translationKey: "distance"
         });
 
-        measurementExpand.append(distanceMeasurement);
-        view.ui.add(measurementExpand, "top-left");
+
 
 //AREA MEASUREMENT
         const areaMeasurement = createMapComponent(
@@ -295,14 +312,13 @@ window.initMapPage = async function () {
                 unit: "metric"
             }
         );
-        const areaExpand = createMapComponent("arcgis-expand", {
-            expandIcon: "measure-area",
-            expandTooltip: "Measure Area",
-
+        const areaExpand = createExpand({
+            content: areaMeasurement,
+            icon: "measure-area",
+            translationKey: "area"
         });
 
-        areaExpand.append(areaMeasurement);
-        view.ui.add(areaExpand, "top-left");
+
 
 //BOOKMARKS
         const bookmarks = createMapComponent("arcgis-bookmarks",{
@@ -311,21 +327,22 @@ window.initMapPage = async function () {
             dragEnabled: true
         });
 
-        const bookmarksExpand = createMapComponent("arcgis-expand", {
-            expandIcon: "bookmark",
-            expandTooltip: "Bookmarks",
-
+        const bookmarksExpand = createExpand({
+            content: bookmarks,
+            icon: "bookmark",
+            translationKey: "bookmarks"
         });
 
-        bookmarksExpand.append(bookmarks);
-        view.ui.add(bookmarksExpand, "top-left");
+
+
 //HOME
         const home = new Home({
             view: view,
-            label: window.t("homeW")
+            label: window.t("homeW"),
         });
+        home.uiStrings={title: window.t("homeW")};
 
-        view.ui.add(home, "top-left");
+
 
 //LEGEND
         const legend = createMapComponent("arcgis-legend");
@@ -341,7 +358,7 @@ window.initMapPage = async function () {
         legend.style.position = "relative";
         legend.style.top = "10px";
 
-        view.ui.add(legend, "bottom-left");
+
 
 
 //SKETCH
@@ -353,57 +370,61 @@ window.initMapPage = async function () {
             }
         );
 
-        view.ui.add(sketch, "top-right");
+
 
 //CONVERTER
         const coordinateConversion = createMapComponent(
             "arcgis-coordinate-conversion"
         );
 
-        view.ui.add(coordinateConversion, "top-right");
 
 
-        const compass = createMapComponent(
-            "arcgis-compass",
-            {
-                label: window.t("compass")
-            }
-        );
 
-        view.ui.add(compass, "top-right");
+        const compass = createMapComponent("arcgis-compass", {
+            label: window.t("compass")
+        });
+        compass.messageOverrides = {
+            reset: window.t("compass"),
+            title: window.t("compass")
+        };
+
+
+
 
 //PRINT
         const print = createMapComponent("arcgis-print");
 
-        const printExpand = createMapComponent("arcgis-expand", {
-            expandIcon: "print",
-            expandTooltip: "Print Map",
+        const printExpand = createExpand({
+            content: print,
+            icon: "print",
+            translationKey: "print"
         });
 
-        printExpand.append(print);
-        view.ui.add(printExpand, "bottom-right");
+
 
 
         //EVAL PROF
         const elevationProfile = createMapComponent(
             "arcgis-elevation-profile");
 
-        const elevationExpand = createMapComponent("arcgis-expand", {
-            expandTooltip: "Elevation Profile"
+        const elevationExpand = createExpand({
+            content: elevationProfile,
+            icon: "measure",
+            translationKey: "elevation"
         });
 
-        elevationExpand.append(elevationProfile);
-        view.ui.add(elevationExpand, "bottom-right");
 
 
-        const locate = createMapComponent(
-            "arcgis-locate",
-            {
-                label: window.t("locate")
-            }
-        );
+        const locate = createMapComponent("arcgis-locate", {
+            label: window.t("locate")
+        });
 
-        view.ui.add(locate, "bottom-right");
+        locate.messageOverrides = {
+            title: window.t("locate"),
+            label: window.t("locate")
+        };
+
+
 
 
         const scaleBar = createMapComponent("arcgis-scale-bar", {
@@ -414,7 +435,7 @@ window.initMapPage = async function () {
 
         });
 
-        view.ui.add(scaleBar, "bottom-right");
+
 
 
         function updateMapTranslations() {
@@ -463,28 +484,49 @@ window.initMapPage = async function () {
                 }
             ];
 
-            // Works with your Expand widgets and components.
-            const expandableTools = [
-                [searchExpand, "search"],
-                [layerListExpand, "layers"],
-                [basemapGalleryExpand, "basemaps"],
-                [measurementExpand, "distance"],
-                [areaExpand, "area"],
-                [bookmarksExpand, "bookmarks"],
-                [printExpand, "print"],
-                [elevationExpand, "elevation"]
+            const uiItems = [
+                [Zoom, "top-left"],
+                [searchExpand, "top-left"],
+                [layerListExpand, "top-left"],
+                [basemapGalleryExpand, "top-left"],
+                [measurementExpand, "top-left"],
+                [areaExpand, "top-left"],
+                [bookmarksExpand, "top-left"],
+                [home, "top-left"],
+                [legend, "bottom-left"],
+                [sketch, "top-right"],
+                [coordinateConversion, "top-right"],
+                [compass, "top-right"],
+                [printExpand, "bottom-right"],
+                [elevationExpand, "bottom-right"],
+                [locate, "bottom-right"],
+                [scaleBar, "bottom-right"]
             ];
 
-            expandableTools.forEach(([expand, key]) => {
-                const tool = window.t(key);
+            uiItems.forEach(([item, position]) => {
+                view.ui.add(item, position);
+            });
+
+            // Works with your Expand widgets and components.
+            const expandTools = [
+                searchExpand,
+                layerListExpand,
+                basemapGalleryExpand,
+                measurementExpand,
+                areaExpand,
+                bookmarksExpand,
+                printExpand,
+                elevationExpand
+            ];
+
+            expandTools.forEach((expand) => {
+                const tool = window.t(expand.dataset.translationKey);
 
                 expand.label = tool;
                 expand.expandTooltip = tool;
-
-                expand.collapseTooltip = window.t("closeTool", {
-                    tool
-                });
+                expand.collapseTooltip = window.t("closeTool", { tool });
             });
+
 
             // Public labels for the legacy widgets.
             search.label = window.t("search");
@@ -492,6 +534,23 @@ window.initMapPage = async function () {
             compass.label = window.t("compass");
             locate.label = window.t("locate");
             home.label = window.t("homeW");
+            home.uiStrings = {
+                title: window.t("homeW")
+            };
+
+
+            compass.messageOverrides = {
+                reset: window.t("compass"),
+                title: window.t("compass")
+            };
+            locate.messageOverrides = {
+                title: window.t("locate"),
+                label: window.t("locate")
+            };
+            Zoom.messageOverrides = {
+                zoomIn: window.t("zoomIn"),
+                zoomOut: window.t("zoomOut")
+            };
 
 
             // Public labels and host-level hover text for components.
@@ -508,7 +567,7 @@ window.initMapPage = async function () {
                 [print, "print"],
                 [elevationProfile, "elevation"],
                 [locate, "locate"],
-                [scaleBar, "scale"]
+                [scaleBar, "scale"],
             ];
 
             components.forEach(([component, key]) => {

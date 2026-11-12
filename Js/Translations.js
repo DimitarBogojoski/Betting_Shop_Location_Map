@@ -69,6 +69,10 @@
                 "Мапата не може да се вчита. Проверете ја конзолата.",
             sortAscending: "Подреди растечки",
             sortDescending: "Подреди опаѓачки",
+            zoomIn:"Зумирај",
+            zoomOut:"Одзумирај",
+
+            searchPlaceholder: "Пребарајте адреса или место"
         },
 
         EN: {
@@ -121,7 +125,7 @@
             distance: "Measure distance",
             area: "Measure area",
             bookmarks: "Bookmarks",
-            homeW: "Home",
+            homeW: "Initial View",
             legend: "Legend",
             sketch: "Sketch",
             coordinates: "Coordinate conversion",
@@ -140,6 +144,10 @@
                 "The map could not be loaded. Check the console.",
             sortAscending: "Sort ascending",
             sortDescending: "Sort descending",
+            zoomIn:"Zoom in",
+            zoomOut:"Zoom out",
+
+            searchPlaceholder: "Find address or place"
         },
 
         SQ: {
@@ -210,7 +218,11 @@
             mapError:
                 "Harta nuk mund të ngarkohet. Kontrolloni konsolën.",
             sortAscending: "Rendit rritës",
-            sortDescending: "Rendit zbritës"
+            sortDescending: "Rendit zbritës",
+            zoomIn:"Zmadho",
+            zoomOut:"Zvogëlo pamjen",
+
+            searchPlaceholder: "Kërko adresë ose vend"
         }
     };
 
@@ -241,11 +253,11 @@
 
     window.t = function (key, values = {}) {
         const template =
-            translations[currentLanguage][key] ??
-            translations.MK[key] ??
-            key;
+            translations[currentLanguage]?.[key] ??
+            translations.MK?.[key] ??
+            "";
 
-        return template.replace(/\{(\w+)\}/g, (match, name) =>
+        return String(template).replace(/\{(\w+)\}/g, (match, name) =>
             Object.hasOwn(values, name)
                 ? String(values[name])
                 : match
