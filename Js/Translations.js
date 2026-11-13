@@ -72,7 +72,29 @@
             zoomIn:"Зумирај",
             zoomOut:"Одзумирај",
 
-            searchPlaceholder: "Пребарајте адреса или место"
+            searchPlaceholder: "Пребарајте адреса или место",
+
+            distanceNewMeasurement: "Ново мерење",
+            distanceInstruction: "Започнете со мерење со кликнување на картата за да ја поставите првата точка.",
+            distanceUnits: "Единици",
+            distanceMetric: "Метрички",
+            distanceResult: "Растојание",
+
+            distanceUnitMetric: "Метрички",
+            distanceUnitImperial: "Империјални",
+            distanceUnitInches: "Инчи",
+            distanceUnitFeet: "Стапки",
+            distanceUnitYards: "Јарди",
+            distanceUnitMiles: "Мили",
+            distanceUnitNauticalMiles: "Наутички милји",
+            distanceUnitUSFeet: "Стапки (САД)",
+            distanceUnitMillimeters: "Милиметри",
+            distanceUnitCentimeters: "Сантиметри",
+            distanceUnitDecimeters: "Дециметри",
+            distanceUnitKilometers: "Километри",
+
+            areaResult: "Површина",
+            perimeterResult: "Периметар",
         },
 
         EN: {
@@ -147,7 +169,28 @@
             zoomIn:"Zoom in",
             zoomOut:"Zoom out",
 
-            searchPlaceholder: "Find address or place"
+            searchPlaceholder: "Find address or place",
+
+            distanceNewMeasurement: "New measurement",
+            distanceInstruction: "Start measuring by clicking on the map to place your first point.",
+            distanceUnits: "Units",
+            distanceMetric: "Metric",
+            distanceResult: "Distance",
+
+            distanceUnitMetric: "Metric",
+            distanceUnitImperial: "Imperial",
+            distanceUnitInches: "Inches",
+            distanceUnitFeet: "Feet",
+            distanceUnitYards: "Yards",
+            distanceUnitMiles: "Miles",
+            distanceUnitNauticalMiles: "Nautical miles",
+            distanceUnitUSFeet: "Feet (US)",
+            distanceUnitMillimeters: "Millimeters",
+            distanceUnitCentimeters: "Centimeters",
+            distanceUnitDecimeters: "Decimeters",
+            distanceUnitKilometers: "Kilometers",
+            areaResult: "Area",
+            perimeterResult: "Perimeter",
         },
 
         SQ: {
@@ -222,7 +265,28 @@
             zoomIn:"Zmadho",
             zoomOut:"Zvogëlo pamjen",
 
-            searchPlaceholder: "Kërko adresë ose vend"
+            searchPlaceholder: "Kërko adresë ose vend",
+
+            distanceNewMeasurement: "Matje e re",
+            distanceInstruction: "Filloni matjen duke klikuar në hartë për të vendosur pikën e parë.",
+            distanceUnits: "Njësitë",
+            distanceMetric: "Metrike",
+            distanceResult: "Distanca",
+
+            distanceUnitMetric: "Metrike",
+            distanceUnitImperial: "Perandorake",
+            distanceUnitInches: "Inç",
+            distanceUnitFeet: "Këmbë",
+            distanceUnitYards: "Jardë",
+            distanceUnitMiles: "Milje",
+            distanceUnitNauticalMiles: "Milje detare",
+            distanceUnitUSFeet: "Këmbë (SHBA)",
+            distanceUnitMillimeters: "Milimetra",
+            distanceUnitCentimeters: "Centimetra",
+            distanceUnitDecimeters: "Decimetra",
+            distanceUnitKilometers: "Kilometra",
+            areaResult: "Sipërfaqja",
+            perimeterResult: "Perimetri",
         }
     };
 
