@@ -6,6 +6,9 @@ let distanceMapClickHandle = null;
 let distanceTranslationObserver = null;
 let areaTranslationObserver = null;
 let bookmarkTranslationObserver = null;
+let elevationTranslationObserver = null;
+let sketchTranslationObserver = null;
+let coordinateConversionTranslationObserver = null;
 
 const OBLOZUVALNICI_URL =
     "https://gisserver.gdi.mk/arcgis/rest/services/KLADILNICI/KLADILNICI_KAZINA_MK/MapServer/1";
@@ -43,6 +46,21 @@ window.destroyMapPage = function () {
     if (bookmarkTranslationObserver) {
         bookmarkTranslationObserver.disconnect();
         bookmarkTranslationObserver = null;
+    }
+
+    if (elevationTranslationObserver) {
+        elevationTranslationObserver.disconnect();
+        elevationTranslationObserver = null;
+    }
+
+    if (sketchTranslationObserver) {
+        sketchTranslationObserver.disconnect();
+        sketchTranslationObserver = null;
+    }
+
+    if (coordinateConversionTranslationObserver) {
+        coordinateConversionTranslationObserver.disconnect();
+        coordinateConversionTranslationObserver = null;
     }
 
     if (mapView) {
@@ -109,7 +127,8 @@ window.initMapPage = async function () {
 
 //MAP
         const map = new ArcGISMap({
-            basemap: "topo-vector"
+            basemap: "topo-vector",
+            ground: "world-elevation"
         });
 
 
@@ -124,14 +143,28 @@ window.initMapPage = async function () {
 
             listMode: "show",
 
-            renderer:{
-                type: "simple",
+            // renderer:{
+            //     type: "simple",
+            //
+            //     symbol:{
+            //         type: "picture-marker",
+            //         url: "Images/SoccerBall.png",
+            //         width: "18px",
+            //         height: "18px"
+            //     }
+            // },
 
-                symbol:{
-                    type: "picture-marker",
-                    url: "Images/SoccerBall.png",
-                    width: "18px",
-                    height: "18px"
+            renderer: {
+                type: "simple",
+                symbol: {
+                    type: "simple-marker",
+                    style: "circle",
+                    size: 8,
+                    color: "blue",
+                    outline: {
+                        color: "white",
+                        width: 1
+                    }
                 }
             },
 
@@ -224,7 +257,8 @@ window.initMapPage = async function () {
             "arcgis-locate",
             "arcgis-print",
             "arcgis-compass",
-            "arcgis-sketch"
+            "arcgis-sketch",
+            "arcgis-elevation-profile"
 
         ];
 
@@ -1007,6 +1041,302 @@ window.initMapPage = async function () {
             }
         );
 
+        // ====================================
+// SKETCH WIDGET TRANSLATIONS
+// ====================================
+
+        function updateSketchTranslations() {
+
+            const tooltipTranslations = [
+                {
+                    key: "sketchSelectFeature",
+                    variants: ["Select feature", "Избери објект", "Zgjidh objektin"]
+                },
+                {
+                    key: "sketchDrawPoint",
+                    variants: ["Draw a point", "Нацртај точка", "Vizato një pikë"]
+                },
+                {
+                    key: "sketchDrawPolyline",
+                    variants: ["Draw a polyline", "Нацртај линија", "Vizato një vijë"]
+                },
+                {
+                    key: "sketchDrawPolygon",
+                    variants: ["Draw a polygon", "Нацртај полигон", "Vizato një poligon"]
+                },
+                {
+                    key: "sketchDrawRectangle",
+                    variants: [
+                        "Draw a rectangle or square",
+                        "Нацртај правоаголник или квадрат",
+                        "Vizato një drejtkëndësh ose katror"
+                    ]
+                },
+                {
+                    key: "sketchDrawCircle",
+                    variants: [
+                        "Draw a circle or ellipse",
+                        "Нацртај круг или елипса",
+                        "Vizato një rreth ose elipsë"
+                    ]
+                },
+                {
+                    key: "sketchUndo",
+                    variants: ["Undo", "Врати", "Zhbëj"]
+                },
+                {
+                    key: "sketchRedo",
+                    variants: ["Redo", "Повтори", "Ribëj"]
+                },
+                {
+                    key: "sketchSettings",
+                    variants: ["Settings", "Поставки", "Cilësimet"]
+                }
+            ];
+
+            const translations = [
+
+                // Settings
+                {
+                    selector: ".heading",
+                    key: "sketchSettings",
+                    variants: ["Settings"]
+                },
+                {
+                    selector: ".esri-labeled-switch__label-content div",
+                    key: "sketchEnableTooltips",
+                    variants: ["Enable tooltips"]
+                },
+                {
+                    selector: ".esri-labeled-switch__label",
+                    key: "sketchEnableSnapping",
+                    variants: ["Enable snapping"]
+                },
+                {
+                    selector: ".esri-labeled-switch__label",
+                    key: "sketchGeometryGuides",
+                    variants: ["Geometry guides"]
+                },
+                {
+                    selector: ".esri-labeled-switch__label",
+                    key: "sketchFeatureToFeature",
+                    variants: ["Feature to feature"]
+                },
+                {
+                    selector: ".esri-labeled-switch__label",
+                    key: "sketchGrid",
+                    variants: ["Grid"]
+                },
+                {
+                    selector: ".heading",
+                    key: "sketchSnappingLayers",
+                    variants: ["Snapping layers"]
+                },
+                {
+                    selector: ".heading",
+                    key: "sketchGridOptions",
+                    variants: ["Grid options"]
+                }
+
+            ];
+
+            translations.forEach(({ selector, key, variants }) => {
+
+                const elements = queryShadowDOM(sketch, selector);
+
+                elements.forEach(element => {
+
+                    const textNode = findTextNode(
+                        element,
+                        variants
+                    );
+
+                    // Also recognize elements already translated.
+                    if (
+                        !textNode &&
+                        element.dataset.translationKey !== key
+                    ) {
+                        return;
+                    }
+
+                    const translated = window.t(key);
+
+
+
+                    if (!translated) {
+                        console.warn("Missing Sketch translation:", key);
+                        return;
+                    }
+
+                    if (textNode) {
+
+                        if (textNode.textContent.trim() !== translated) {
+                            textNode.textContent = translated;
+                        }
+
+                    } else if (element.dataset.translationKey === key) {
+
+                        changeElementText(element, translated);
+
+                    }
+
+                    element.dataset.translationKey = key;
+
+                });
+
+            });
+
+            // ====================================
+// SKETCH TOOLBAR HOVER TOOLTIPS
+// ====================================
+
+            function findInteractiveAncestor(element) {
+
+                let current = element;
+
+                while (current && current !== sketch) {
+
+                    if (
+                        current.matches?.(
+                            'button, calcite-button, calcite-action, [role="button"], [tabindex="0"]'
+                        )
+                    ) {
+                        return current;
+                    }
+
+                    // Move through normal DOM and Shadow DOM.
+                    const root = current.getRootNode();
+
+                    current = current.parentElement || root?.host || null;
+                }
+
+                return null;
+            }
+
+
+            const tooltipContainers = queryShadowDOM(
+                sketch,
+                ".text-container"
+            );
+
+            tooltipContainers.forEach(container => {
+
+                const currentText = container.textContent
+                    .replace(/\s+/g, " ")
+                    .trim();
+
+                // Identify the corresponding toolbar tooltip.
+                const translation = tooltipTranslations.find(item =>
+                    container.dataset.translationKey === item.key ||
+                    item.variants.includes(currentText)
+                );
+
+                if (!translation) return;
+
+                const translated = window.t(translation.key);
+
+                if (!translated) {
+                    console.warn(
+                        "Missing Sketch tooltip translation:",
+                        translation.key
+                    );
+                    return;
+                }
+
+                // Find the actual interactive toolbar button.
+                const button = findInteractiveAncestor(container);
+
+                // Apply the hover tooltip to both elements.
+                const targets = [container, button].filter(Boolean);
+
+                targets.forEach(target => {
+
+                    if (target.getAttribute("title") !== translated) {
+                        target.setAttribute("title", translated);
+                    }
+
+                    if (target.getAttribute("aria-label") !== translated) {
+                        target.setAttribute("aria-label", translated);
+                    }
+
+                    target.dataset.tooltipTranslationKey = translation.key;
+
+                });
+
+            });
+
+        }
+
+        // ====================================
+// SKETCH TRANSLATION OBSERVER
+// ====================================
+
+        function startSketchTranslationObserver() {
+
+            if (sketchTranslationObserver) {
+                sketchTranslationObserver.disconnect();
+            }
+
+            const observedRoots = new WeakSet();
+            let scheduled = false;
+
+            const observer = new MutationObserver(() => {
+
+                observeSketchTree(sketch);
+
+                if (scheduled) return;
+
+                scheduled = true;
+
+                requestAnimationFrame(() => {
+
+                    scheduled = false;
+
+                    if (
+                        thisInit !== mapInitId ||
+                        mapView !== view ||
+                        !container.isConnected
+                    ) {
+                        return;
+                    }
+
+                    updateSketchTranslations();
+
+                });
+
+            });
+
+            sketchTranslationObserver = observer;
+
+            function observeSketchTree(root) {
+
+                if (!root || observedRoots.has(root)) return;
+
+                observedRoots.add(root);
+
+                observer.observe(root, {
+                    childList: true,
+                    subtree: true,
+                    characterData: true
+                });
+
+                if (root.shadowRoot) {
+                    observeSketchTree(root.shadowRoot);
+                }
+
+                root.querySelectorAll?.("*").forEach(element => {
+
+                    if (element.shadowRoot) {
+                        observeSketchTree(element.shadowRoot);
+                    }
+
+                });
+
+            }
+
+            observeSketchTree(sketch);
+
+        }
 
 
 //CONVERTER
@@ -1014,9 +1344,358 @@ window.initMapPage = async function () {
             "arcgis-coordinate-conversion"
         );
 
+        // ====================================
+// COORDINATE CONVERSION TRANSLATIONS
+// ====================================
+
+        function updateCoordinateConversionTranslations() {
+
+            // ====================================
+            // ADD CONVERSION OPTION
+            // ====================================
+
+            const addConversionOption = queryShadowDOM(
+                coordinateConversion,
+                'option[value="default"]'
+            )[0];
+
+            if (addConversionOption) {
+
+                const translated = window.t("coordinateAddConversion");
+
+                if (translated) {
+
+                    addConversionOption.textContent = translated;
+                    addConversionOption.label = translated;
+                    addConversionOption.setAttribute("label", translated);
+
+                    addConversionOption.dataset.translationKey =
+                        "coordinateAddConversion";
+                }
+            }
 
 
+            // ====================================
+            // HOVER TOOLTIP TRANSLATIONS
+            // ====================================
 
+            const tooltipTranslations = [
+                {
+                    selector: 'button[aria-label]',
+                    key: "coordinateInputCoordinate",
+                    variants: ["Input coordinate"]
+                },
+                {
+                    selector: "calcite-button",
+                    key: "coordinateCaptureMode",
+                    variants: ["Capture mode"]
+                },
+                {
+                    selector: "calcite-button",
+                    key: "coordinateFormatSettings",
+                    variants: ["Format settings"]
+                }
+            ];
+
+            // ====================================
+// INPUT COORDINATE HEADING
+// ====================================
+
+            const inputHeadingVariants = [
+                "Input coordinate",
+                "Внеси координата",
+                "Fut koordinatën"
+            ];
+
+            const inputHeading = queryShadowDOM(
+                coordinateConversion,
+                "h4.heading"
+            ).find(element =>
+                element.dataset.translationKey === "coordinateInputCoordinate" ||
+                inputHeadingVariants.includes(element.textContent.trim())
+            );
+
+            if (inputHeading) {
+
+                const translated = window.t("coordinateInputCoordinate");
+
+                if (translated) {
+                    changeElementText(inputHeading, translated);
+                    inputHeading.dataset.translationKey =
+                        "coordinateInputCoordinate";
+                }
+            }
+
+
+// ====================================
+// INPUT COORDINATE PLACEHOLDER
+// ====================================
+
+            const coordinateInputs = queryShadowDOM(
+                coordinateConversion,
+                'input[placeholder]'
+            );
+
+            coordinateInputs.forEach(input => {
+
+                if (
+                    input.dataset.translationKey !== "coordinateInputCoordinate" &&
+                    !inputHeadingVariants.includes(input.placeholder)
+                ) {
+                    return;
+                }
+
+                const translated = window.t("coordinateInputCoordinate");
+
+                if (!translated) return;
+
+                input.placeholder = translated;
+                input.setAttribute("placeholder", translated);
+                input.setAttribute("aria-label", translated);
+
+                input.dataset.translationKey = "coordinateInputCoordinate";
+
+            });
+
+
+// ====================================
+// GO TO LOCATION LABEL
+// ====================================
+
+            const goToLocationVariants = [
+                "Go to location",
+                "Оди до локацијата",
+                "Shko te vendndodhja"
+            ];
+
+            const goToLocationLabel = queryShadowDOM(
+                coordinateConversion,
+                "calcite-label"
+            ).find(element =>
+                element.dataset.translationKey === "coordinateGoToLocation" ||
+                findTextNode(element, goToLocationVariants)
+            );
+
+            if (goToLocationLabel) {
+
+                const translated = window.t("coordinateGoToLocation");
+
+                if (translated) {
+                    changeElementText(goToLocationLabel, translated);
+                    goToLocationLabel.dataset.translationKey =
+                        "coordinateGoToLocation";
+                }
+            }
+
+
+// ====================================
+// CONVERT BUTTON
+// ====================================
+
+            const convertVariants = [
+                "Convert",
+                "Конвертирај",
+                "Konverto"
+            ];
+
+            const convertButton = queryShadowDOM(
+                coordinateConversion,
+                "calcite-button"
+            ).find(element =>
+                element.dataset.translationKey === "coordinateConvert" ||
+                findTextNode(element, convertVariants)
+            );
+
+            if (convertButton) {
+
+                const translated = window.t("coordinateConvert");
+
+                if (translated) {
+                    changeElementText(convertButton, translated);
+                    convertButton.dataset.translationKey = "coordinateConvert";
+                }
+            }
+
+            tooltipTranslations.forEach(({ selector, key, variants }) => {
+
+                const elements = queryShadowDOM(
+                    coordinateConversion,
+                    selector
+                );
+
+                const element = elements.find(item =>
+                    item.dataset.translationKey === key ||
+                    variants.includes(item.getAttribute("aria-label")) ||
+                    variants.includes(item.getAttribute("title"))
+                );
+
+                if (!element) return;
+
+                const translated = window.t(key);
+
+                if (!translated) return;
+
+                // Native hover tooltip.
+                element.title = translated;
+                element.setAttribute("title", translated);
+
+                // Accessibility label.
+                element.setAttribute("aria-label", translated);
+
+                element.dataset.translationKey = key;
+
+            });
+
+
+            // ====================================
+            // VISIBLE FORMAT SETTINGS LABELS
+            // ====================================
+
+            const labelTranslations = [
+                {
+                    selector: ".heading",
+                    key: "coordinateFormatSettings",
+                    variants: ["Format settings"]
+                },
+                {
+                    selector: "calcite-label",
+                    key: "coordinateChangeDisplay",
+                    variants: ["Change coordinate display"]
+                },
+                {
+                    selector: "calcite-label",
+                    key: "coordinatePreview",
+                    variants: ["Preview"]
+                }
+            ];
+
+            labelTranslations.forEach(({ selector, key, variants }) => {
+
+                const elements = queryShadowDOM(
+                    coordinateConversion,
+                    selector
+                );
+
+                elements.forEach(element => {
+
+                    let textNode = findTextNode(element, variants);
+
+                    // Support already translated elements on language changes.
+                    if (
+                        !textNode &&
+                        element.dataset.translationKey === key
+                    ) {
+                        const walker = document.createTreeWalker(
+                            element,
+                            NodeFilter.SHOW_TEXT
+                        );
+
+                        let node;
+
+                        while (node = walker.nextNode()) {
+                            if (node.textContent.trim()) {
+                                textNode = node;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!textNode) return;
+
+                    const translated = window.t(key);
+
+                    if (!translated) return;
+
+                    if (textNode.textContent.trim() !== translated) {
+                        textNode.textContent = translated;
+                    }
+
+                    element.dataset.translationKey = key;
+
+                });
+
+            });
+
+        }
+
+        // ====================================
+// COORDINATE CONVERSION OBSERVER
+// ====================================
+
+        function startCoordinateConversionTranslationObserver() {
+
+            if (coordinateConversionTranslationObserver) {
+                coordinateConversionTranslationObserver.disconnect();
+            }
+
+            const observedRoots = new WeakSet();
+            let scheduled = false;
+
+            const observer = new MutationObserver(() => {
+
+                observeCoordinateTree(coordinateConversion);
+
+                if (scheduled) return;
+
+                scheduled = true;
+
+                requestAnimationFrame(() => {
+
+                    scheduled = false;
+
+                    if (
+                        thisInit !== mapInitId ||
+                        mapView !== view ||
+                        !container.isConnected
+                    ) {
+                        return;
+                    }
+
+                    updateCoordinateConversionTranslations();
+
+                });
+
+            });
+
+            coordinateConversionTranslationObserver = observer;
+
+            function observeCoordinateTree(root) {
+
+                if (!root || observedRoots.has(root)) return;
+
+                observedRoots.add(root);
+
+                observer.observe(root, {
+                    childList: true,
+                    subtree: true,
+                    characterData: true,
+                    attributes: true,
+                    attributeFilter: [
+                        "title",
+                        "aria-label",
+                        "label"
+                    ]
+                });
+
+                if (root.shadowRoot) {
+                    observeCoordinateTree(root.shadowRoot);
+                }
+
+                root.querySelectorAll?.("*").forEach(element => {
+
+                    if (element.shadowRoot) {
+                        observeCoordinateTree(element.shadowRoot);
+                    }
+
+                });
+
+            }
+
+            observeCoordinateTree(coordinateConversion);
+
+        }
+
+//COMPASS
         const compass = createMapComponent("arcgis-compass", {
             label: window.t("compass")
         });
@@ -1028,19 +1707,74 @@ window.initMapPage = async function () {
 
 
 
-//PRINT
-        const print = createMapComponent("arcgis-print");
+// ====================================
+// PRINT
+// ====================================
 
+        const print = createMapComponent("arcgis-print", {
+            printServiceUrl:
+                "https://utility.arcgisonline.com/arcgis/rest/services/Utilities/PrintingTools/GPServer/Export%20Web%20Map%20Task"
+        });
+
+// Print request submitted
+        print.addEventListener("arcgisSubmit", (event) => {
+            console.log("PRINT SUBMITTED:", event.detail);
+        });
+
+// Print request completed
+        print.addEventListener("arcgisComplete", (event) => {
+
+            const file = event.detail?.link;
+            const error = file?.error;
+            const details = error?.details;
+
+            console.group("PRINT EXPORT DIAGNOSTICS");
+
+            console.log("Error name:", error?.name);
+            console.log("Error message:", error?.message);
+
+            console.log("HTTP status:", details?.httpStatus);
+            console.log("Request URL:", details?.url);
+            console.log("Message code:", details?.messageCode);
+            console.log("Sub code:", details?.subCode);
+            console.log("Server messages:", details?.messages);
+
+            console.log("Raw server response:", details?.raw);
+            console.log("Request options:", details?.requestOptions);
+
+            console.log(
+                "All error details:",
+                JSON.stringify(details, null, 2)
+            );
+
+            console.groupEnd();
+
+        });
+
+// Print file saved
+        print.addEventListener("arcgisSaveAs", (event) => {
+            console.log("PRINT FILE SAVED:", event.detail);
+        });
+
+
+// IMPORTANT: Keep this declaration!
         const printExpand = createExpand({
             content: print,
             icon: "print",
             translationKey: "print"
         });
 
-
-//EVAL PROF
+// ELEVATION PROFILE
         const elevationProfile = createMapComponent(
-            "arcgis-elevation-profile");
+            "arcgis-elevation-profile",
+            {
+                profiles: [
+                    {
+                        type: "ground"
+                    }
+                ]
+            }
+        );
 
         const elevationExpand = createExpand({
             content: elevationProfile,
@@ -1048,6 +1782,511 @@ window.initMapPage = async function () {
             translationKey: "elevation"
         });
 
+// ====================================
+// ELEVATION PROFILE TRANSLATIONS
+// ====================================
+
+        function updateElevationProfileTranslations() {
+
+            // ====================================
+            // HELPER: TRANSLATE AN ELEMENT
+            // ====================================
+
+            function translateElement(element, key, variants) {
+
+                if (!element) return;
+
+                const translated = window.t(key);
+
+                if (!translated) {
+                    console.warn("Missing elevation translation:", key);
+                    return;
+                }
+
+                // Find the original or previously translated text node.
+                let textNode = findTextNode(element, variants);
+
+                // If already translated, use the existing translation key.
+                if (!textNode && element.dataset.translationKey === key) {
+
+                    const walker = document.createTreeWalker(
+                        element,
+                        NodeFilter.SHOW_TEXT
+                    );
+
+                    let node;
+
+                    while (node = walker.nextNode()) {
+
+                        if (node.textContent.trim()) {
+                            textNode = node;
+                            break;
+                        }
+                    }
+                }
+
+                if (textNode) {
+
+                    if (textNode.textContent.trim() !== translated) {
+                        textNode.textContent = translated;
+                    }
+
+                    element.dataset.translationKey = key;
+                }
+            }
+
+
+            // ====================================
+            // PROMPT MESSAGE
+            // ====================================
+
+            const promptVariants = [
+                "Draw line to generate an elevation profile.",
+                "Create elevation profile by clicking in the map to place your first point, use double-click for last point.",
+                "Нацртајте линија за да креирате профил на надморска височина.",
+                "Кликнете на картата за да креирате профил на надморска височина и да ја поставите првата точка. Кликнете двапати за да ја поставите последната точка.",
+                "Vizatoni një vijë për të krijuar profilin e lartësisë.",
+                "Klikoni në hartë për të krijuar profilin e lartësisë dhe për të vendosur pikën e parë. Klikoni dy herë për të vendosur pikën e fundit."
+            ];
+
+            const prompt = queryShadowDOM(
+                elevationProfile,
+                ".prompt-message"
+            ).find(element =>
+                element.dataset.translationKey === "elevationPrompt" ||
+                findTextNode(element, promptVariants)
+            );
+
+            translateElement(
+                prompt,
+                "elevationPrompt",
+                promptVariants
+            );
+
+
+            // ====================================
+            // GROUND LABEL
+            // ====================================
+
+            const groundVariants = [
+                "Ground",
+                "Терен",
+                "Terreni"
+            ];
+
+            const groundLabel = queryShadowDOM(
+                elevationProfile,
+                "calcite-label.label"
+            ).find(element =>
+                element.dataset.translationKey === "elevationGround" ||
+                findTextNode(element, groundVariants)
+            );
+
+            translateElement(
+                groundLabel,
+                "elevationGround",
+                groundVariants
+            );
+
+
+            // ====================================
+            // STATISTIC LABELS
+            // ====================================
+
+            const statisticTranslations = [
+
+                {
+                    key: "elevationLength",
+                    variants: ["Length", "Должина", "Gjatësia"]
+                },
+                {
+                    key: "elevationGain",
+                    variants: ["Gain", "Искачување", "Ngjitja"]
+                },
+                {
+                    key: "elevationLoss",
+                    variants: ["Loss", "Спуштање", "Zbritja"]
+                },
+                {
+                    key: "elevationMin",
+                    variants: ["Min", "Мин.", "Min."]
+                },
+                {
+                    key: "elevationMax",
+                    variants: ["Max", "Макс.", "Maks."]
+                },
+                {
+                    key: "elevationAvg",
+                    variants: ["Avg", "Просек", "Mes."]
+                },
+                {
+                    key: "elevationMaxSlope",
+                    variants: [
+                        "Max Slope",
+                        "Макс. наклон",
+                        "Pjerrësia maks."
+                    ]
+                },
+                {
+                    key: "elevationAvgSlope",
+                    variants: [
+                        "Avg Slope",
+                        "Просечен наклон",
+                        "Pjerrësia mes."
+                    ]
+                }
+
+            ];
+
+            const statisticLabels = queryShadowDOM(
+                elevationProfile,
+                ".statistic-label"
+            );
+
+            statisticLabels.forEach(label => {
+
+                // Find the translation using its saved key or its visible text.
+                const translation = statisticTranslations.find(item =>
+                    label.dataset.translationKey === item.key ||
+                    findTextNode(label, item.variants)
+                );
+
+                if (!translation) return;
+
+                translateElement(
+                    label,
+                    translation.key,
+                    translation.variants
+                );
+
+            });
+
+
+            // ====================================
+            // NEW PROFILE BUTTON
+            // ====================================
+
+            const buttonVariants = [
+                "New profile",
+                "Нов профил",
+                "Profil i ri"
+            ];
+
+            const newProfileButton = queryShadowDOM(
+                elevationProfile,
+                ".action-button"
+            ).find(element =>
+                element.dataset.translationKey === "elevationNewProfile" ||
+                findTextNode(element, buttonVariants)
+            );
+
+            translateElement(
+                newProfileButton,
+                "elevationNewProfile",
+                buttonVariants
+            );
+
+            // ====================================
+// DONE BUTTON
+// ====================================
+
+            const doneButtonVariants = [
+                "Done",
+                "Готово",
+                "U krye"
+            ];
+
+            const doneButton = queryShadowDOM(
+                elevationProfile,
+                ".action-button"
+            ).find(element =>
+                element.dataset.translationKey === "elevationDone" ||
+                doneButtonVariants.some(variant =>
+                    element.textContent.trim() === variant
+                )
+            );
+
+            translateElement(
+                doneButton,
+                "elevationDone",
+                doneButtonVariants
+            );
+
+            // ====================================
+// ELEVATION PROFILE UNIT TRANSLATIONS
+// ====================================
+
+// ====================================
+// DISTANCE UNITS, ELEVATION UNITS,
+// UNIFORM CHART SCALING
+// ====================================
+
+            const elevationLabelTranslations = [
+                {
+                    key: "elevationDistanceUnits",
+                    variants: ["Distance Units"]
+                },
+                {
+                    key: "elevationUnits",
+                    variants: ["Elevation units"]
+                },
+                {
+                    key: "elevationUniformChartScaling",
+                    variants: ["Uniform chart scaling"]
+                }
+            ];
+
+            const elevationLabels = queryShadowDOM(
+                elevationProfile,
+                "calcite-label, label, .label, .uniform-chart-scaling-label"
+            );
+
+            elevationLabels.forEach(label => {
+
+                const translation = elevationLabelTranslations.find(item =>
+                    label.dataset.translationKey === item.key ||
+                    item.variants.some(variant =>
+                        findTextNode(label, [variant])
+                    )
+                );
+
+                if (!translation) return;
+
+                translateElement(
+                    label,
+                    translation.key,
+                    translation.variants
+                );
+
+            });
+
+
+// ====================================
+// DISTANCE AND ELEVATION UNIT OPTIONS
+// ====================================
+
+            const elevationUnitTranslations = [
+
+                {
+                    key: "distanceUnitMetric",
+                    variants: ["Metric"]
+                },
+                {
+                    key: "distanceUnitImperial",
+                    variants: ["Imperial"]
+                },
+                {
+                    key: "distanceUnitInches",
+                    variants: ["Inches"]
+                },
+                {
+                    key: "distanceUnitFeet",
+                    variants: ["Feet"]
+                },
+                {
+                    key: "distanceUnitYards",
+                    variants: ["Yards"]
+                },
+                {
+                    key: "distanceUnitMiles",
+                    variants: ["Miles"]
+                },
+                {
+                    key: "distanceUnitNauticalMiles",
+                    variants: ["Nautical miles"]
+                },
+                {
+                    key: "distanceUnitUSFeet",
+                    variants: ["Feet (US)"]
+                },
+                {
+                    key: "distanceUnitMillimeters",
+                    variants: ["Millimeters"]
+                },
+                {
+                    key: "distanceUnitCentimeters",
+                    variants: ["Centimeters"]
+                },
+                {
+                    key: "elevationUnitDecimeter",
+                    variants: ["Decimeter"]
+                },
+                {
+                    key: "elevationUnitMeters",
+                    variants: ["Meters"]
+                },
+                {
+                    key: "distanceUnitKilometers",
+                    variants: ["Kilometers"]
+                }
+
+            ];
+
+            const elevationUnitOptions = queryShadowDOM(
+                elevationProfile,
+                "calcite-option"
+            );
+
+            elevationUnitOptions.forEach(option => {
+
+                const translation = elevationUnitTranslations.find(item =>
+                    option.dataset.translationKey === item.key ||
+                    item.variants.some(variant =>
+                        findTextNode(option, [variant])
+                    )
+                );
+
+                if (!translation) return;
+
+                translateElement(
+                    option,
+                    translation.key,
+                    translation.variants
+                );
+
+            });
+
+        }
+
+        // ====================================
+// OBSERVE ELEVATION PROFILE SHADOW DOM
+// ====================================
+
+        function startElevationProfileTranslationObserver() {
+
+            if (elevationTranslationObserver) {
+                elevationTranslationObserver.disconnect();
+            }
+
+            const observedRoots = new WeakSet();
+            let scheduled = false;
+
+            const observer = new MutationObserver(() => {
+
+                // Detect newly rendered content and nested Shadow DOM.
+                observeElevationTree(elevationProfile);
+                observeElevationTree(elevationExpand);
+
+                if (scheduled) return;
+
+                scheduled = true;
+
+                requestAnimationFrame(() => {
+
+                    scheduled = false;
+
+                    if (
+                        thisInit !== mapInitId ||
+                        mapView !== view ||
+                        !container.isConnected
+                    ) {
+                        return;
+                    }
+
+                    updateElevationProfileTranslations();
+
+                });
+
+            });
+
+            elevationTranslationObserver = observer;
+
+            const observerOptions = {
+                childList: true,
+                subtree: true,
+                characterData: true,
+                attributes: true,
+                attributeFilter: [
+                    "expanded",
+                    "hidden",
+                    "aria-expanded"
+                ]
+            };
+
+            function observeElevationTree(root) {
+
+                if (!root) return;
+
+                if (!observedRoots.has(root)) {
+
+                    observedRoots.add(root);
+
+                    observer.observe(root, observerOptions);
+                }
+
+                // Observe the root's own Shadow DOM.
+                if (root.shadowRoot) {
+                    observeElevationTree(root.shadowRoot);
+                }
+
+                // Discover nested Shadow DOM.
+                root.querySelectorAll?.("*").forEach(element => {
+
+                    if (element.shadowRoot) {
+                        observeElevationTree(element.shadowRoot);
+                    }
+
+                });
+
+            }
+
+            observeElevationTree(elevationProfile);
+            observeElevationTree(elevationExpand);
+
+        }
+
+        // ====================================
+// CONNECT SKETCH TO ELEVATION PROFILE
+// ====================================
+
+        function updateElevationProfile(graphic) {
+
+            if (!graphic || graphic.geometry?.type !== "polyline") {
+                return;
+            }
+
+            // A valid profile needs at least two vertices.
+            const paths = graphic.geometry.paths;
+
+            if (!paths || !paths.some(path => path.length >= 2)) {
+                return;
+            }
+
+            // Send the drawn line to the Elevation Profile component.
+            elevationProfile.geometry = graphic.geometry;
+
+            console.log("Elevation profile updated:", graphic.geometry);
+        }
+
+
+// When a new graphic is created.
+        sketch.addEventListener("arcgisCreate", (event) => {
+
+            if (event.detail.state !== "complete") {
+                return;
+            }
+
+            updateElevationProfile(event.detail.graphic);
+
+        });
+
+
+// When an existing graphic is modified.
+        sketch.addEventListener("arcgisUpdate", (event) => {
+
+            if (event.detail.state !== "complete") {
+                return;
+            }
+
+            const polyline = event.detail.graphics?.find(
+                graphic => graphic.geometry?.type === "polyline"
+            );
+
+            if (polyline) {
+                updateElevationProfile(polyline);
+            }
+
+        });
 
 //LOCATE
         const locate = createMapComponent("arcgis-locate", {
@@ -1887,6 +3126,8 @@ window.initMapPage = async function () {
                 updateDistanceTranslations();
                 updateAreaTranslations();
                 updateBookmarkTranslations();
+                updateElevationProfileTranslations();
+                updateCoordinateConversionTranslations();
                 startBookmarkTranslationObserver();
 
                 layerList.label = window.t("layers");
@@ -1945,18 +3186,28 @@ window.initMapPage = async function () {
         await Promise.all([
             distanceMeasurement.componentOnReady(),
             areaMeasurement.componentOnReady(),
-            bookmarks.componentOnReady()
+            bookmarks.componentOnReady(),
+            elevationProfile.componentOnReady(),
+            sketch.componentOnReady(),
+            coordinateConversion.componentOnReady()
         ]);
 
-// Start observing both widgets.
+// Start observing widgets.
         startDistanceTranslationObserver();
         startAreaTranslationObserver();
         startBookmarkTranslationObserver();
+        startElevationProfileTranslationObserver();
+        startCoordinateConversionTranslationObserver();
+        updateCoordinateConversionTranslations();
 
+// Apply initial translations.
+        updateElevationProfileTranslations();
 // Apply translations immediately.
         updateDistanceTranslations();
         updateAreaTranslations();
         updateBookmarkTranslations();
+        startSketchTranslationObserver();
+        updateSketchTranslations();
 
 // Listen for language changes.
         mapLanguageHandler = updateMapTranslations;
