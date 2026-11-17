@@ -34,7 +34,13 @@ window.initContactPage = async function () {
 
 
         const longitude = 21.424359106722342;
-        const latitude = 41.995979788148965;
+        const latitude = 41.995979788148965
+
+        container.style.setProperty(
+            "border",
+            "1px solid #999",
+            "important"
+        );
 
         const map = new ArcGISMap({
             basemap: "streets-3d",
@@ -46,6 +52,7 @@ window.initContactPage = async function () {
             center: [longitude, latitude],
             zoom: 16
         });
+
 
         const marker = new Graphic({
             geometry: {
@@ -71,13 +78,6 @@ window.initContactPage = async function () {
         if (
             thisInitialization !== initializationId ||
             !container.isConnected
-        ) {
-            return;
-        }
-
-        console.error("Contact map failed to load:", error);
-
-        container.textContent =
-            "Мапата не може да се вчита. Проверете ја конзолата.";
+        ) {}
     }
 };

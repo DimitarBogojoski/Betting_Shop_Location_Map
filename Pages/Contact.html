@@ -8,11 +8,11 @@
 
             <div class="col-12 col-lg-6">
                 <form id="contact-form">
-                    <div class="mb-3">
+                    <div class="mb-3" >
                         <label for="contact-name" class="form-label" data-i18n="name"></label>
                         <input
                                 type="text"
-                                class="form-control"
+                                class="form-control border-black border-opacity-25"
                                 id="contact-name"
                                 name="name"
                                 data-i18n-placeholder="yourName"
@@ -24,7 +24,7 @@
                         <label for="contact-email" class="form-label" data-i18n="email"></label>
                         <input
                                 type="email"
-                                class="form-control"
+                                class="form-control border-black border-opacity-25"
                                 id="contact-email"
                                 name="email"
                                 autocomplete="email"
@@ -37,7 +37,7 @@
                         <label for="contact-subject" class="form-label" data-i18n="subject"></label>
                         <input
                                 type="text"
-                                class="form-control"
+                                class="form-control border-black border-opacity-25"
                                 id="contact-subject"
                                 name="subject"
                                 autocomplete="subject"
@@ -49,7 +49,7 @@
                     <div class="mb-3">
                         <label for="contact-message" class="form-label" data-i18n="message"></label>
                         <textarea
-                                class="form-control"
+                                class="form-control border-black border-opacity-25"
                                 id="contact-message"
                                 name="message"
                                 rows="5"
@@ -58,14 +58,13 @@
                         ></textarea>
                     </div>
 
-                    <button type="submit" class="btn bt-color" data-i18n="send"></button>
+                    <button type="submit" class="btn bt-color  border-black border-opacity-50" data-i18n="send"></button>
                 </form>
             </div>
 
             <!-- Right: Map and contact information -->
-            <div class="col-12 col-lg-6">
-                <div id="contact-map" aria-label="Мапа со локацијата на канцеларијата">
-                </div>
+            <div class="col-12 col-lg-6 border-black">
+                <div id="contact-map" class="border-black" aria-label="Мапа со локацијата на канцеларијата"></div>
 
                 <address class="contact-details mt-4 mb-0">
                     <div class="d-flex gap-1">

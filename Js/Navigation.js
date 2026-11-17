@@ -21,6 +21,31 @@ const pages = {
 
 let currentRequest;
 
+// Load the map module only when the map page is needed.
+let mapModulePromise = null;
+
+async function ensureMapModuleLoaded() {
+
+    if (typeof window.initMapPage === "function") {
+        return;
+    }
+
+    if (!mapModulePromise) {
+        mapModulePromise = import("./Map.js").catch(error => {
+            mapModulePromise = null;
+            throw error;
+        });
+    }
+
+    await mapModulePromise;
+
+    if (typeof window.initMapPage !== "function") {
+        throw new Error(
+            "Map.js loaded, but window.initMapPage is not available."
+        );
+    }
+}
+
 async function loadPage() {
     const pageName = window.location.hash.slice(1) || "Map";
     const file = pages[pageName];
@@ -57,6 +82,7 @@ async function loadPage() {
 
 // Initialize the main map.
         if (document.getElementById("map-view")) {
+            await ensureMapModuleLoaded();
             await window.initMapPage();
         }
 // Initialize the table
