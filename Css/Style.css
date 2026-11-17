@@ -1,0 +1,39 @@
+/* ====================================
+   TIMES NEW ROMAN
+==================================== */
+
+:root {
+    --font-primary: "Times New Roman", Times, serif;
+    --calcite-font-family: "Times New Roman", Times, serif;
+}
+
+body,
+p,
+button,
+input,
+textarea,
+select,
+.nav-link,
+h3 {
+    font-family: var(--font-primary);
+    font-weight: 400;
+}
+
+h1,
+h2 {
+    font-family: var(--font-primary);
+    font-weight: 700;
+}
+
+h1 {
+    font-size: 48px;
+}
+
+h2 {
+    font-size: 36px;
+}
+
+em,
+.italic {
+    font-style: italic;
+}

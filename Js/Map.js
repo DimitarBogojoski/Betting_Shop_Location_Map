@@ -651,7 +651,6 @@ window.initMapPage = async function () {
             bookmarkInputs.forEach(input => {
 
                 if (!translatedPlaceholder) {
-                    console.warn("Missing bookmarkTitlePlaceholder translation.");
                     return;
                 }
 
@@ -833,7 +832,6 @@ window.initMapPage = async function () {
                 const translated = window.t(key);
 
                 if (!translated) {
-                    console.warn("Missing bookmark translation:", key);
                     return;
                 }
 
@@ -1170,7 +1168,6 @@ window.initMapPage = async function () {
 
 
                     if (!translated) {
-                        console.warn("Missing Sketch translation:", key);
                         return;
                     }
 
@@ -1242,10 +1239,6 @@ window.initMapPage = async function () {
                 const translated = window.t(translation.key);
 
                 if (!translated) {
-                    console.warn(
-                        "Missing Sketch tooltip translation:",
-                        translation.key
-                    );
                     return;
                 }
 
@@ -1722,46 +1715,6 @@ window.initMapPage = async function () {
                 "https://utility.arcgisonline.com/arcgis/rest/services/Utilities/PrintingTools/GPServer/Export%20Web%20Map%20Task"
         });
 
-// Print request submitted
-        print.addEventListener("arcgisSubmit", (event) => {
-            console.log("PRINT SUBMITTED:", event.detail);
-        });
-
-// Print request completed
-        print.addEventListener("arcgisComplete", (event) => {
-
-            const file = event.detail?.link;
-            const error = file?.error;
-            const details = error?.details;
-
-            console.group("PRINT EXPORT DIAGNOSTICS");
-
-            console.log("Error name:", error?.name);
-            console.log("Error message:", error?.message);
-
-            console.log("HTTP status:", details?.httpStatus);
-            console.log("Request URL:", details?.url);
-            console.log("Message code:", details?.messageCode);
-            console.log("Sub code:", details?.subCode);
-            console.log("Server messages:", details?.messages);
-
-            console.log("Raw server response:", details?.raw);
-            console.log("Request options:", details?.requestOptions);
-
-            console.log(
-                "All error details:",
-                JSON.stringify(details, null, 2)
-            );
-
-            console.groupEnd();
-
-        });
-
-// Print file saved
-        print.addEventListener("arcgisSaveAs", (event) => {
-            console.log("PRINT FILE SAVED:", event.detail);
-        });
-
 
 // IMPORTANT: Keep this declaration!
         const printExpand = createExpand({
@@ -1786,7 +1739,6 @@ window.initMapPage = async function () {
                 const translated = window.t(key);
 
                 if (!translated) {
-                    console.warn("Missing Print translation:", key);
                     return;
                 }
 

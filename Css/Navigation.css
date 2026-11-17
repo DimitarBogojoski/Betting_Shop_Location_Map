@@ -13,8 +13,10 @@ body {
     display: flex;
     flex-direction: column;
 
-    background: #f5feff;
-    background: linear-gradient(90deg, rgba(245, 254, 255, 1) 0%, rgba(255, 244, 237, 1) 100%);
+    /*background: #f5feff;*/
+    /*background: linear-gradient(90deg, rgba(245, 254, 255, 1) 0%, rgba(255, 244, 237, 1) 100%);*/
+    background: #FAE6B1;
+    background: linear-gradient(180deg, rgba(250, 230, 177, 1) 0%, rgba(179, 222, 229, 1) 100%);
 }
 
 body > .navbar{
@@ -51,8 +53,12 @@ body > .navbar{
     /*background: #e1f2f7;*/
     /*background: linear-gradient(90deg, rgba(225, 242, 247, 1) 0%, rgba(251, 218, 200, 1) 100%);*/
     box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.08);
-    background: #91c8c9;
-    background: linear-gradient(90deg, rgba(145, 200, 201, 1) 0%, rgba(214, 169, 150, 1) 100%);
+    /*background: #91c8c9;*/
+    /*background: linear-gradient(90deg, rgba(145, 200, 201, 1) 0%, rgba(214, 169, 150, 1) 100%);*/
+    /*background: #FAE6B1;*/
+    /*background: linear-gradient(180deg, rgba(250, 230, 177, 1) 0%, rgba(255, 161, 1, 1) 100%);*/
+    background: linear-gradient(180deg, rgba(179, 222, 229, 1) 0%, rgba(95, 130, 140, 1) 100%);
+    border-top: 1px solid #a3a3a3;
 }
 
 .offcanvas-header{
@@ -60,7 +66,8 @@ body > .navbar{
 }
 
 .offcanvas{
-    background: #e1f2f7;
+    background: #FAE6B1;
+    background: linear-gradient(180deg, rgba(250, 230, 177, 1) 0%, rgba(179, 222, 229, 1) 100%);
 }
 
 .navbar > .header-layout {

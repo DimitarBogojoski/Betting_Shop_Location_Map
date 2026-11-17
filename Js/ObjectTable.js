@@ -219,8 +219,9 @@ window.initObjectsTable = function (records = []) {
             });
         }
 
-// Export still contains all loaded records.
-        exportButton.disabled = records.length === 0;
+// Enable export only when the current filtered table has records.
+        exportButton.disabled =
+            tbody.querySelectorAll("tr.object-table-row").length === 0;
 
         renderPagination();
     }
@@ -236,25 +237,50 @@ window.initObjectsTable = function (records = []) {
         return `"${text.replace(/"/g, '""')}"`;
     }
 
-    exportButton.onclick = () => {
+    exportButton.onclick = function (event) {
+        event.preventDefault();
+
+        // Read the column headings currently displayed in the table.
+        const headers = Array.from(
+            document.querySelectorAll(".objects-table thead th")
+        ).map((header) => {
+            const label = header.querySelector("[data-i18n]");
+            return label
+                ? label.textContent.trim()
+                : header.textContent.trim();
+        });
+
+        // Export all records matching the current search.
+        if (filteredRecords.length === 0) {
+            return;
+        }
+
         const rows = [
-            [
-                window.t("objectId"),
-                window.t("objectName"),
-                window.t("address")
-            ],
-            ...records.map((record) => [
+            headers,
+            ...filteredRecords.map((record) => [
                 record.objectId,
                 record.name,
                 record.address
             ])
         ];
 
+        // Escape CSV values.
+        function escapeCSV(value) {
+            let text = String(value ?? "");
+
+            // Prevent spreadsheet formula injection.
+            if (/^[\s]*[=+\-@]/.test(text)) {
+                text = "'" + text;
+            }
+
+            return `"${text.replace(/"/g, '""')}"`;
+        }
+
         const csv = rows
-            .map((row) => row.map(csvCell).join(","))
+            .map((row) => row.map(escapeCSV).join(","))
             .join("\r\n");
 
-        // UTF-8 BOM helps spreadsheet programs display Cyrillic correctly.
+        // Generate the CSV file.
         const blob = new Blob(["\uFEFF", csv], {
             type: "text/csv;charset=utf-8;"
         });
@@ -264,11 +290,15 @@ window.initObjectsTable = function (records = []) {
 
         link.href = url;
         link.download = "objekti.csv";
+
         document.body.appendChild(link);
         link.click();
         link.remove();
 
-        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        setTimeout(() => {
+            URL.revokeObjectURL(url);
+        }, 2000);
+
     };
 
     function normalizeSearch(value) {
