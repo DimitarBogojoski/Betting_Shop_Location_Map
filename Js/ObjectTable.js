@@ -96,7 +96,7 @@ window.initObjectsTable = function (records = []) {
     function renderPagination() {
         pagination.replaceChildren();
 
-        addPageButton("<", currentPage - 1, {
+        addPageButton("‹", currentPage - 1, {
             disabled: currentPage === 1 || filteredRecords.length === 0,
             ariaLabel: window.t("previousPage")
         });
@@ -129,7 +129,7 @@ window.initObjectsTable = function (records = []) {
             previousPage = page;
         });
 
-        addPageButton(">", currentPage + 1, {
+        addPageButton("›", currentPage + 1, {
             disabled: currentPage === totalPages || filteredRecords.length === 0,
             ariaLabel: window.t("nextPage")
         });
@@ -226,19 +226,18 @@ window.initObjectsTable = function (records = []) {
         renderPagination();
     }
 
-    function csvCell(value) {
-        let text = String(value ?? "");
-
-        // Prevent spreadsheet software from interpreting data as formulas.
-        if (/^[\s]*[=+\-@]/.test(text)) {
-            text = "'" + text;
-        }
-
-        return `"${text.replace(/"/g, '""')}"`;
-    }
-
     exportButton.onclick = function (event) {
         event.preventDefault();
+
+        exportButton.classList.remove("is-flashing");
+
+        void exportButton.offsetWidth;
+
+        exportButton.classList.add("is-flashing");
+
+        setTimeout(() => {
+            exportButton.classList.remove("is-flashing");
+        }, 450);
 
         // Read the column headings currently displayed in the table.
         const headers = Array.from(
@@ -298,7 +297,6 @@ window.initObjectsTable = function (records = []) {
         setTimeout(() => {
             URL.revokeObjectURL(url);
         }, 2000);
-
     };
 
     function normalizeSearch(value) {

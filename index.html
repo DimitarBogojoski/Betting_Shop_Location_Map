@@ -13,10 +13,12 @@
     <script src="Js/ObjectTable.js" defer></script>
     <script src="Js/Navigation.js" defer></script>
     <script src="Js/Translations.js" defer></script>
+    <script src="Js/CookieConsent.js" defer></script>
 
     <link href="Css/Style.css" rel="stylesheet">
     <link href="Css/Contact.css" rel="stylesheet">
     <link href="Css/Map.css" rel="stylesheet">
+    <link href="Css/CookieConsent.css" rel="stylesheet">
     <link rel="stylesheet" href="https://js.arcgis.com/5.0/esri/themes/light/main.css" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="Css/Navigation.css" rel="stylesheet" />
@@ -199,5 +201,104 @@
         </div>
     </div>
 </footer>
+<!-- COOKIE CONSENT POPUP -->
+<section id="cookie-consent" class="cookie-consent" hidden
+         role="region" aria-labelledby="cookie-title">
+
+    <div class="cookie-header">
+        <div class="cookie-icon">🍪</div>
+        <div>
+            <h2 id="cookie-title">Вашата приватност ни е важна</h2>
+            <p id="cookie-description">
+                Користиме неопходни технологии за функционирање на
+                веб-страницата. Со ваша согласност, можеме да користиме
+                и аналитички колачиња.
+            </p>
+        </div>
+    </div>
+
+    <!-- MAIN BUTTONS -->
+    <div id="cookie-actions" class="cookie-actions">
+
+        <button type="button" id="cookie-accept"
+                class="cookie-btn cookie-btn-primary">
+            Прифати ги сите
+        </button>
+
+        <button type="button" id="cookie-reject"
+                class="cookie-btn cookie-btn-secondary">
+            Одбиј ги необврзните
+        </button>
+
+        <button type="button" id="cookie-customize"
+                class="cookie-btn cookie-btn-text">
+            Поставки
+        </button>
+
+    </div>
+
+    <!-- CUSTOM COOKIE SETTINGS -->
+    <div id="cookie-preferences" hidden>
+
+        <h3 id="cookie-settings-title">Поставки за колачиња</h3>
+
+        <div class="cookie-category">
+
+            <div>
+                <strong id="cookie-necessary-title">Неопходни колачиња</strong>
+                <p id="cookie-necessary-description">
+                    Потребни се за правилно функционирање на веб-страницата.
+                </p>
+            </div>
+
+            <span class="cookie-always-active"
+                  id="cookie-always-active">
+                Секогаш активни
+            </span>
+
+        </div>
+
+        <div class="cookie-category">
+
+            <div>
+                <strong id="cookie-analytics-title">
+                    Аналитички колачиња
+                </strong>
+                <p id="cookie-analytics-description">
+                    Ни помагаат да разбереме како посетителите ја користат
+                    веб-страницата.
+                </p>
+            </div>
+
+            <label class="cookie-switch">
+                <input type="checkbox" id="cookie-analytics">
+                <span class="cookie-slider"></span>
+            </label>
+
+        </div>
+
+        <div class="cookie-actions">
+
+            <button type="button" id="cookie-save"
+                    class="cookie-btn cookie-btn-primary">
+                Зачувај ги поставките
+            </button>
+
+            <button type="button" id="cookie-back"
+                    class="cookie-btn cookie-btn-secondary">
+                Назад
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- COOKIE SETTINGS SHORTCUT -->
+<button type="button" id="cookie-settings-shortcut"
+        class="cookie-settings-shortcut" hidden>
+    🍪 Поставки за колачиња
+</button>
 </body>
 </html>

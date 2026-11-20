@@ -7,7 +7,8 @@
         <div class="row g-4">
 
             <div class="col-12 col-lg-6">
-                <form id="contact-form">
+                <form id="contact-form" action="https://api.web3forms.com/submit" method="POST">
+                    <input type="hidden" name="access_key" value="dbd4d64a-eb44-47b6-a680-bb5136dd82c5">
                     <div class="mb-3" >
                         <label for="contact-name" class="form-label" data-i18n="name"></label>
                         <input
@@ -58,7 +59,18 @@
                         ></textarea>
                     </div>
 
-                    <button type="submit" class="btn bt-color  border-black border-opacity-50" data-i18n="send"></button>
+                    <button
+                            type="submit"
+                            class="btn bt-color border-black border-opacity-50 contact-send-button"
+                    >
+                        <span data-i18n="send"></span>
+
+                        <img
+                                src="/Images/Icons/rocket.png"
+                                alt=""
+                                class="contact-send-icon"
+                        >
+                    </button>
                 </form>
             </div>
 
@@ -68,18 +80,18 @@
 
                 <address class="contact-details mt-4 mb-0">
                     <div class="d-flex gap-1">
-                    <img src="/Images/Icons/icons8-location-pin-50.png" alt="" class="small-icons gap-1 mt-1">
+                    <img src="/Images/Icons/location-pin.png" alt="" class="small-icons gap-1 mt-1">
                     <p data-i18n="contactLocation"></p>
                         Булевар Свети Климент Охридски 58б/2-4,
                         Скопје 1000
                     </div>
                     <div class="d-flex gap-1">
-                    <img src="/Images/Icons/icons8-phone-50.png" alt="" class="small-icons gap-1 mt-1">
+                    <img src="/Images/Icons/phone.png" alt="" class="small-icons gap-1 mt-1">
                     <p data-i18n="contactPhone"></p>
                         <a href="tel:023136359">02 313 6359</a>
                     </div>
                     <div class="d-flex gap-1">
-                    <img src="/Images/Icons/icons8-mails-64.png" alt="" class="small-icons gap-1 mt-1">
+                    <img src="/Images/Icons/mail.png" alt="" class="small-icons gap-1 mt-1">
                     <p class="mb-0" data-i18n="contactEmail"></p>
                         office@kaldilnici.com.mk
                     </div>

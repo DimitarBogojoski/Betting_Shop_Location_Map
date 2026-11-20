@@ -6,14 +6,22 @@
 <section class="objects-section py-4" aria-label="Табела со објекти">
     <div class="row mb-3">
         <div class="col-12 col-md-4 col-lg-3">
-            <input
-                    type="search"
-                    id="objects-search"
-                    class="form-control"
-                    aria-label="Пребарај во табелата"
-                    data-i18n-placeholder="search"
-                    data-i18n-aria="search"
-            >
+            <div class="objects-search-wrapper">
+                <input
+                        type="search"
+                        id="objects-search"
+                        class="form-control"
+                        aria-label="Пребарај во табелата"
+                        data-i18n-placeholder="search"
+                        data-i18n-aria="search"
+                >
+
+                <img
+                        src="../Images/Icons/search.png"
+                        alt=""
+                        class="objects-search-icon"
+                >
+            </div>
         </div>
     </div>
 <!-- Table Head -->
@@ -91,13 +99,21 @@
     </div>
 
 <!--Export-->
+    <!-- Export -->
     <div class="d-flex justify-content-end gap-2 mt-2">
         <button
                 type="button"
-                class="btn bt-color"
+                class="btn bt-color objects-export-button"
                 id="export-objects"
-                data-i18n="export"
-        ></button>
+        >
+            <span data-i18n="export"></span>
+
+            <img
+                    src="../Images/Icons/export.png"
+                    alt=""
+                    class="objects-export-icon"
+            >
+        </button>
     </div>
 
 <!--Record summary-->

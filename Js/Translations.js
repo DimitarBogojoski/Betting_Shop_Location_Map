@@ -216,6 +216,20 @@
             contactPhone: "Телефон:",
             contactEmail: "Е-пошта:",
             contactLocation: "Локација:",
+            cookieTitle: "Вашата приватност ни е важна",
+            cookieDescription: "Користиме неопходни технологии за функционирање на веб-страницата. Со ваша согласност, можеме да користиме и аналитички колачиња.",
+            cookieSettingsTitle: "Поставки за колачиња",
+            cookieNecessaryTitle: "Неопходни колачиња",
+            cookieNecessaryDescription: "Потребни се за правилно функционирање на веб-страницата.",
+            cookieAlwaysActive: "Секогаш активни",
+            cookieAnalyticsTitle: "Аналитички колачиња",
+            cookieAnalyticsDescription: "Ни помагаат да разбереме како посетителите ја користат веб-страницата.",
+            cookieAccept: "Прифати ги сите",
+            cookieReject: "Одбиј ги необврзните",
+            cookieCustomize: "Поставки",
+            cookieSave: "Зачувај ги поставките",
+            cookieBack: "Назад",
+            cookieSettingsShortcut: "🍪 Поставки за колачиња"
         },
 
         EN: {
@@ -434,6 +448,20 @@
             contactPhone: "Phone:",
             contactEmail: "Email:",
             contactLocation: "Location:",
+            cookieTitle: "Your privacy matters",
+            cookieDescription: "We use essential technologies to make this website work. With your permission, we may also use analytics cookies.",
+            cookieSettingsTitle: "Cookie preferences",
+            cookieNecessaryTitle: "Essential cookies",
+            cookieNecessaryDescription: "Required for the website to function properly.",
+            cookieAlwaysActive: "Always active",
+            cookieAnalyticsTitle: "Analytics cookies",
+            cookieAnalyticsDescription: "Help us understand how visitors use the website.",
+            cookieAccept: "Accept all",
+            cookieReject: "Reject optional",
+            cookieCustomize: "Settings",
+            cookieSave: "Save preferences",
+            cookieBack: "Back",
+            cookieSettingsShortcut: "🍪 Cookie settings"
         },
 
         SQ: {
@@ -652,6 +680,20 @@
             contactPhone: "Telefon:",
             contactEmail: "E-mail:",
             contactLocation: "Vendndodhja:",
+            cookieTitle: "Privatësia juaj është e rëndësishme",
+            cookieDescription: "Ne përdorim teknologji thelbësore për funksionimin e faqes. Me lejen tuaj, mund të përdorim edhe cookies analitike.",
+            cookieSettingsTitle: "Cilësimet e cookies",
+            cookieNecessaryTitle: "Cookies thelbësore",
+            cookieNecessaryDescription: "Të nevojshme për funksionimin e duhur të faqes.",
+            cookieAlwaysActive: "Gjithmonë aktive",
+            cookieAnalyticsTitle: "Cookies analitike",
+            cookieAnalyticsDescription: "Na ndihmojnë të kuptojmë se si vizitorët e përdorin faqen.",
+            cookieAccept: "Prano të gjitha",
+            cookieReject: "Refuzo opsionalet",
+            cookieCustomize: "Cilësimet",
+            cookieSave: "Ruaj preferencat",
+            cookieBack: "Prapa",
+            cookieSettingsShortcut: "🍪 Cilësimet e cookies"
         }
     };
 

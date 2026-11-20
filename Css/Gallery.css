@@ -1,22 +1,84 @@
+/* ====================================
+   RESPONSIVE GALLERY
+==================================== */
+
 .gallery-carousel {
-    max-width: 1000px;
+    position: relative;
+
+    width: 70%;
+    max-width: none;
+
+    height: clamp(200px, 55vw, 650px);
+
     margin: 0 auto;
+
     border-radius: 16px;
     overflow: hidden;
     background-color: #17212b;
+
+    box-sizing: border-box;
 }
 
+/* Carousel containers */
+.gallery-carousel .carousel-inner,
+.gallery-carousel .carousel-item {
+    width: 100%;
+    height: 100%;
+}
+
+/* Gallery images */
 .gallery-carousel .carousel-item img {
-    height: clamp(250px, 50vw, 550px);
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
     object-fit: contain;
+    object-position: center;
 }
 
-/* Make arrows easier to see over light images */
+/* Previous and next buttons */
 .gallery-carousel .carousel-control-prev-icon,
 .gallery-carousel .carousel-control-next-icon {
     background-color: rgba(0, 0, 0, 0.55);
     background-size: 60%;
+
     border-radius: 50%;
+
     width: 42px;
     height: 42px;
+}
+
+/* Indicators */
+.gallery-carousel .carousel-indicators {
+    margin-bottom: 12px;
+}
+
+/* ====================================
+   TABLET
+==================================== */
+
+@media (max-width: 992px) {
+    .gallery-carousel {
+        width: 96%;
+        height: clamp(220px, 60vw, 500px);
+    }
+}
+
+/* ====================================
+   MOBILE
+==================================== */
+
+@media (max-width: 576px) {
+    .gallery-carousel {
+        width: 100%;
+        height: clamp(200px, 65vw, 350px);
+        border-radius: 10px;
+    }
+
+    .gallery-carousel .carousel-control-prev-icon,
+    .gallery-carousel .carousel-control-next-icon {
+        width: 32px;
+        height: 32px;
+    }
 }
