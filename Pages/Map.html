@@ -1,9 +1,14 @@
-<!--Map-->
+<div class="zoom-fixed-shell zoom-fixed-map-shell">
+    <div id="map-content" class="zoom-fixed-element">
+<!-- MAP -->
 <div class="map-page">
     <div id="map-view" class="map-view"></div>
 </div>
-<!--Search Bar-->
+
+<!-- OBJECTS TABLE -->
 <section class="objects-section py-4" aria-label="Табела со објекти">
+
+    <!-- Search -->
     <div class="row mb-3">
         <div class="col-12 col-md-4 col-lg-3">
             <div class="objects-search-wrapper">
@@ -15,68 +20,52 @@
                         data-i18n-placeholder="search"
                         data-i18n-aria="search"
                 >
-
-                <img
-                        src="../Images/Icons/search.png"
-                        alt=""
-                        class="objects-search-icon"
-                >
+                <img src="../Images/Icons/search.png"
+                     alt=""
+                     class="objects-search-icon">
             </div>
         </div>
     </div>
-<!-- Table Head -->
+
+    <!-- Table -->
     <div class="table-responsive">
-        <table class="table table-striped table-hover align-middle objects-table ">
+        <table class="table table-striped table-hover align-middle objects-table">
             <thead>
             <tr>
                 <th scope="col" data-sort-key="objectId">
-                    <button
-                            type="button"
-                            class="objects-sort-button"
-                    >
-                <span data-i18n="objectId"></span>
+                    <button type="button" class="objects-sort-button">
+                        <span data-i18n="objectId"></span>
                         <span class="objects-sort-icon" aria-hidden="true"></span>
                     </button>
-
                 </th>
 
                 <th scope="col" data-sort-key="name">
-                    <button
-                            type="button"
-                            class="objects-sort-button"
-                    >
-                <span data-i18n="objectName"></span>
+                    <button type="button" class="objects-sort-button">
+                        <span data-i18n="objectName"></span>
                         <span class="objects-sort-icon" aria-hidden="true"></span>
                     </button>
                 </th>
 
                 <th scope="col" data-sort-key="address">
-                    <button
-                            type="button"
-                            class="objects-sort-button"
-                    >
-                <span data-i18n="address"></span>
+                    <button type="button" class="objects-sort-button">
+                        <span data-i18n="address"></span>
                         <span class="objects-sort-icon" aria-hidden="true"></span>
                     </button>
                 </th>
             </tr>
             </thead>
-<!--Table Body-->
+
             <tbody id="objects-table-body"></tbody>
         </table>
     </div>
 
-    <div class="d-flex justify-content-between align-items-center gap-3">
-<!--Rows per page:-->
-        <div class="d-flex align-items-center gap-2 flex-shrink-0">
-            <label
-                    for="objects-page-size" class="text-nowrap small" data-i18n="rowsPerPage"></label>
+    <!-- Table controls -->
+    <div class="objects-table-controls">
 
-            <select
-                    id="objects-page-size"
-                    class="form-select form-select-sm"
-                    style="width: auto;"
-            >
+        <div class="objects-page-size">
+            <label for="objects-page-size" data-i18n="rowsPerPage"></label>
+
+            <select id="objects-page-size">
                 <option value="5">5</option>
                 <option value="10" selected>10</option>
                 <option value="20">20</option>
@@ -84,43 +73,33 @@
                 <option value="100">100</option>
             </select>
         </div>
-<!--Pagination-->
-        <nav
-                class="objects-pagination"
-                aria-label="Страници на табелата"
-                style="min-width: 0; overflow-x: auto;"
-        >
-            <ul
-                    id="objects-pagination"
-                    class="pagination pagination-sm mb-0"
-            ></ul>
+
+        <!-- Pagination -->
+        <nav class="objects-pagination" aria-label="Страници на табелата">
+            <ul id="objects-pagination" class="pagination pagination-sm mb-0"></ul>
         </nav>
 
     </div>
 
-<!--Export-->
     <!-- Export -->
-    <div class="d-flex justify-content-end gap-2 mt-2">
-        <button
-                type="button"
+    <div class="objects-export-container">
+        <button type="button"
                 class="btn bt-color objects-export-button"
-                id="export-objects"
-        >
+                id="export-objects">
+
             <span data-i18n="export"></span>
 
-            <img
-                    src="../Images/Icons/export.png"
-                    alt=""
-                    class="objects-export-icon"
-            >
+            <img src="../Images/Icons/export.png"
+                 alt=""
+                 class="objects-export-icon">
         </button>
     </div>
 
-<!--Record summary-->
-    <p
-            id="objects-table-summary"
-            class="small text-secondary text-end mt-2 mb-0"
-            role="status"
-    ></p>
+    <!-- Record summary -->
+    <p id="objects-table-summary"
+       class="small text-secondary text-end mt-2 mb-0"
+       role="status"></p>
 
 </section>
+    </div>
+</div>

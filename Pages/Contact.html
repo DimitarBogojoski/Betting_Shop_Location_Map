@@ -1,103 +1,94 @@
-<section class="contact-page" aria-labelledby="contact-title">
-    <h1 id="contact-title" class="text-center mb-0" data-i18n="contact"></h1>
+<div class="zoom-fixed-shell zoom-fixed-contact-shell">
 
+    <section id="contact-page" class="contact-page zoom-fixed-element" aria-labelledby="contact-title">
+
+    <h1 id="contact-title" class="text-center mb-0" data-i18n="contact"></h1>
     <hr class="contact-divider">
 
     <div class="container py-4">
         <div class="row g-4">
 
+            <!-- Contact form -->
             <div class="col-12 col-lg-6">
                 <form id="contact-form" action="https://api.web3forms.com/submit" method="POST">
-                    <input type="hidden" name="access_key" value="dbd4d64a-eb44-47b6-a680-bb5136dd82c5">
-                    <div class="mb-3" >
+
+                    <input type="hidden" name="access_key"
+                           value="dbd4d64a-eb44-47b6-a680-bb5136dd82c5">
+
+                    <div class="mb-3">
                         <label for="contact-name" class="form-label" data-i18n="name"></label>
-                        <input
-                                type="text"
-                                class="form-control border-black border-opacity-25"
-                                id="contact-name"
-                                name="name"
-                                data-i18n-placeholder="yourName"
-                                required
-                        >
+                        <input type="text" class="form-control" id="contact-name"
+                               name="name" data-i18n-placeholder="yourName" required>
                     </div>
 
                     <div class="mb-3">
                         <label for="contact-email" class="form-label" data-i18n="email"></label>
-                        <input
-                                type="email"
-                                class="form-control border-black border-opacity-25"
-                                id="contact-email"
-                                name="email"
-                                autocomplete="email"
-                                data-i18n-placeholder="yourEmail"
-                                required
-                        >
+                        <input type="email" class="form-control" id="contact-email"
+                               name="email" autocomplete="email"
+                               data-i18n-placeholder="yourEmail" required>
                     </div>
 
                     <div class="mb-3">
                         <label for="contact-subject" class="form-label" data-i18n="subject"></label>
-                        <input
-                                type="text"
-                                class="form-control border-black border-opacity-25"
-                                id="contact-subject"
-                                name="subject"
-                                autocomplete="subject"
-                                data-i18n-placeholder="yourSubject"
-                                required
-                        >
+                        <input type="text" class="form-control" id="contact-subject"
+                               name="subject" data-i18n-placeholder="yourSubject" required>
                     </div>
 
                     <div class="mb-3">
                         <label for="contact-message" class="form-label" data-i18n="message"></label>
-                        <textarea
-                                class="form-control border-black border-opacity-25"
-                                id="contact-message"
-                                name="message"
-                                rows="5"
-                                data-i18n-placeholder="yourMessage"
-                                required
-                        ></textarea>
+                        <textarea class="form-control" id="contact-message"
+                                  name="message" rows="5"
+                                  data-i18n-placeholder="yourMessage" required></textarea>
                     </div>
 
-                    <button
-                            type="submit"
-                            class="btn bt-color border-black border-opacity-50 contact-send-button"
-                    >
+                    <button type="submit" class="btn bt-color contact-send-button">
                         <span data-i18n="send"></span>
-
-                        <img
-                                src="/Images/Icons/rocket.png"
-                                alt=""
-                                class="contact-send-icon"
-                        >
+                        <img src="/Images/Icons/rocket.png" alt="" class="contact-send-icon">
                     </button>
+
+                    <p id="contact-form-status" class="contact-form-status"
+                       role="status" aria-live="polite"></p>
                 </form>
             </div>
 
-            <!-- Right: Map and contact information -->
-            <div class="col-12 col-lg-6 border-black">
-                <div id="contact-map" class="border-black" aria-label="Мапа со локацијата на канцеларијата"></div>
+            <!-- Map and contact information -->
+            <div class="col-12 col-lg-6">
+
+                <div id="contact-map"
+                     aria-label="Мапа со локацијата на канцеларијата"></div>
 
                 <address class="contact-details mt-4 mb-0">
-                    <div class="d-flex gap-1">
-                    <img src="/Images/Icons/location-pin.png" alt="" class="small-icons gap-1 mt-1">
-                    <p data-i18n="contactLocation"></p>
-                        Булевар Свети Климент Охридски 58б/2-4,
-                        Скопје 1000
+
+                    <div class="contact-detail">
+                        <img src="/Images/Icons/location-pin.png" alt="">
+                        <div>
+                            <span data-i18n="contactLocation"></span>
+                            <span>Булевар Свети Климент Охридски 58б/2-4, Скопје 1000</span>
+                        </div>
                     </div>
-                    <div class="d-flex gap-1">
-                    <img src="/Images/Icons/phone.png" alt="" class="small-icons gap-1 mt-1">
-                    <p data-i18n="contactPhone"></p>
-                        <a href="tel:023136359">02 313 6359</a>
+
+                    <div class="contact-detail">
+                        <img src="/Images/Icons/phone.png" alt="">
+                        <div>
+                            <span data-i18n="contactPhone"></span>
+                            <a href="tel:023136359">02 313 6359</a>
+                        </div>
                     </div>
-                    <div class="d-flex gap-1">
-                    <img src="/Images/Icons/mail.png" alt="" class="small-icons gap-1 mt-1">
-                    <p class="mb-0" data-i18n="contactEmail"></p>
-                        office@kaldilnici.com.mk
+
+                    <div class="contact-detail">
+                        <img src="/Images/Icons/mail.png" alt="">
+                        <div>
+                            <span data-i18n="contactEmail"></span>
+                            <a href="mailto:office@kaldilnici.com.mk">
+                                office@kaldilnici.com.mk
+                            </a>
+                        </div>
                     </div>
+
                 </address>
             </div>
 
         </div>
     </div>
-</section>
+    </section>
+</div>

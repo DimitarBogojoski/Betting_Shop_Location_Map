@@ -5,10 +5,6 @@ window.destroyContactPage = function () {
     initializationId++;
 
     if (contactView) {
-        if (window.objectsMapView === contactView) {
-            window.objectsMapView = null;
-        }
-
         contactView.destroy();
         contactView = null;
     }
@@ -17,13 +13,10 @@ window.destroyContactPage = function () {
 window.initContactPage = async function () {
     window.destroyContactPage();
 
-    const thisInitialization = initializationId;
+    const currentId = initializationId;
     const container = document.getElementById("contact-map");
-    const form = document.getElementById("contact-form");
 
-    if (!container || !form) {
-        return;
-    }
+    if (!container) return;
 
     try {
         const [ArcGISMap, MapView, Graphic] = await $arcgis.import([
@@ -32,29 +25,27 @@ window.initContactPage = async function () {
             "@arcgis/core/Graphic.js"
         ]);
 
+        if (currentId !== initializationId || !container.isConnected) {
+            return;
+        }
 
         const longitude = 21.424359106722342;
-        const latitude = 41.995979788148965
-
-        container.style.setProperty(
-            "border",
-            "1px solid #999",
-            "important"
-        );
+        const latitude = 41.995979788148965;
 
         const map = new ArcGISMap({
-            basemap: "streets-3d",
+            basemap: "streets-3d"
         });
 
-        contactView = new MapView({
+        const view = new MapView({
             container,
             map,
             center: [longitude, latitude],
             zoom: 16
         });
 
+        contactView = view;
 
-        const marker = new Graphic({
+        view.graphics.add(new Graphic({
             geometry: {
                 type: "point",
                 longitude,
@@ -69,15 +60,23 @@ window.initContactPage = async function () {
                     width: 2
                 }
             }
-        });
+        }));
 
-        contactView.graphics.add(marker);
+        await view.when();
 
-        await contactView.when();
+        if (currentId !== initializationId || !container.isConnected) {
+            view.destroy();
+
+            if (contactView === view) {
+                contactView = null;
+            }
+        }
+
     } catch (error) {
-        if (
-            thisInitialization !== initializationId ||
-            !container.isConnected
-        ) {}
+        if (currentId !== initializationId || !container.isConnected) {
+            return;
+        }
+
+        console.error("Contact map initialization failed:", error);
     }
 };

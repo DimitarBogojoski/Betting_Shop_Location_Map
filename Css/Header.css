@@ -1,0 +1,181 @@
+/* Fixed-size header container */
+.zoom-fixed-shell {
+    width: 100%;
+    flex: 0 0 auto;
+    overflow: visible;
+}
+
+.zoom-fixed-header-shell {
+    position: relative;
+    z-index: 1000;
+}
+
+/* Header zoom compensation */
+.zoom-fixed-element {
+    transform-origin: top left;
+}
+
+#site-header {
+    position: static;
+    flex-shrink: 0;
+}
+
+/* Main content */
+#main-content {
+    flex: 1 0 auto;
+    min-width: 0;
+    margin: 0;
+}
+
+/* Images */
+.small-img-flags,
+.small-round-img {
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.small-img-flags {
+    width: 30px;
+    height: 30px;
+}
+
+.small-round-img {
+    width: 50px;
+    height: 50px;
+}
+
+/* Navigation sidebar */
+#navigationSidebar {
+    --bs-offcanvas-width: 220px;
+    max-width: 85vw;
+}
+
+.offcanvas {
+    background: linear-gradient(180deg, #FAE6B1 0%, #B3DEE5 100%);
+}
+
+.offcanvas-header {
+    border-bottom: 1px solid #a3a3a3;
+}
+
+/* Header */
+.bg-header {
+    background: linear-gradient(180deg, #B3DEE5 0%, #5F828C 100%);
+    border-top: 1px solid #a3a3a3;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.navbar > .header-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    gap: 12px;
+    margin: 0;
+}
+
+.header-left {
+    justify-self: start;
+}
+
+.header-title {
+    margin: 0;
+    text-align: center;
+    white-space: nowrap;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.header-language {
+    justify-self: end;
+}
+
+.header-gdi-logo {
+    display: block;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* Keep the original desktop layout while zooming */
+body.zoom-layout-desktop .navbar > .header-layout {
+    gap: 12px;
+}
+
+body.zoom-layout-desktop .header-title {
+    font-size: 24px;
+}
+
+body.zoom-layout-desktop .header-gdi-logo {
+    width: 42px;
+    height: 42px;
+}
+
+body.zoom-layout-desktop .header-left .navbar-toggler {
+    padding: .25rem .75rem;
+    font-size: 1.25rem;
+}
+
+body.zoom-layout-desktop .header-language .language-toggle {
+    padding: .375rem .75rem;
+}
+
+body.zoom-layout-desktop #selected-language-label {
+    display: inline;
+}
+
+/* Keep the original mobile layout while zooming */
+body.zoom-layout-mobile .navbar > .header-layout {
+    gap: 6px;
+}
+
+body.zoom-layout-mobile .header-title {
+    font-size: 16px;
+}
+
+body.zoom-layout-mobile .header-gdi-logo {
+    width: 30px;
+    height: 30px;
+}
+
+body.zoom-layout-mobile .header-left .navbar-toggler,
+body.zoom-layout-mobile .header-language .language-toggle {
+    padding: 4px;
+}
+
+body.zoom-layout-mobile .header-left .navbar-toggler {
+    font-size: 16px;
+}
+
+body.zoom-layout-mobile #selected-language-label {
+    display: none;
+}
+
+/* Fallback responsive styles */
+@media (max-width: 575.98px) {
+    .navbar > .header-layout {
+        gap: 6px;
+    }
+
+    .header-title {
+        font-size: 16px;
+    }
+
+    .header-gdi-logo {
+        width: 30px;
+        height: 30px;
+    }
+
+    .header-left .navbar-toggler,
+    .header-language .language-toggle {
+        padding: 4px;
+    }
+
+    .header-left .navbar-toggler {
+        font-size: 16px;
+    }
+
+    #selected-language-label {
+        display: none;
+    }
+}

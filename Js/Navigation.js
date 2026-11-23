@@ -1,15 +1,4 @@
 const navigationSidebar = document.getElementById("navigationSidebar");
-//Returning sidebar
-navigationSidebar.querySelectorAll(".nav-link").forEach((link) => {
-    link.addEventListener("click", () => {
-        bootstrap.Offcanvas
-            .getOrCreateInstance(navigationSidebar)
-            .hide();
-    });
-});
-
-
-//Changes the page
 const mainContent = document.getElementById("main-content");
 
 const pages = {
@@ -19,50 +8,56 @@ const pages = {
     Contact: "Pages/Contact.html"
 };
 
+// Close the sidebar after selecting a page.
+navigationSidebar?.addEventListener("click", (event) => {
+    if (event.target.closest(".nav-link")) {
+        bootstrap.Offcanvas
+            .getOrCreateInstance(navigationSidebar)
+            .hide();
+    }
+});
+
 let currentRequest;
+let mapModulePromise;
 
-// Load the map module only when the map page is needed.
-let mapModulePromise = null;
-
+// Load Map.js only when needed.
 async function ensureMapModuleLoaded() {
+    if (typeof window.initMapPage === "function") return;
 
-    if (typeof window.initMapPage === "function") {
-        return;
-    }
-
-    if (!mapModulePromise) {
-        mapModulePromise = import("./Map.js").catch(error => {
-            mapModulePromise = null;
-            throw error;
-        });
-    }
+    mapModulePromise ??= import("./Map.js").catch(error => {
+        mapModulePromise = null;
+        throw error;
+    });
 
     await mapModulePromise;
 
     if (typeof window.initMapPage !== "function") {
-        throw new Error(
-            "Map.js loaded, but window.initMapPage is not available."
-        );
+        throw new Error("Map.js did not expose window.initMapPage.");
     }
 }
 
+// Load the selected page.
 async function loadPage() {
+    currentRequest?.abort();
+
+    const controller = new AbortController();
+    currentRequest = controller;
+
+    const isCurrent = () => currentRequest === controller;
     const pageName = window.location.hash.slice(1) || "Map";
     const file = pages[pageName];
 
-    currentRequest?.abort();
+    mainContent.setAttribute("aria-busy", "true");
 
     if (!file) {
         mainContent.innerHTML = "<h1>Страницата не е пронајдена.</h1>";
+        mainContent.removeAttribute("aria-busy");
         return;
     }
 
-    currentRequest = new AbortController();
-    mainContent.setAttribute("aria-busy", "true");
-
     try {
         const response = await fetch(file, {
-            signal: currentRequest.signal
+            signal: controller.signal
         });
 
         if (!response.ok) {
@@ -71,44 +66,44 @@ async function loadPage() {
 
         const html = await response.text();
 
-        // Destroy previously initialized maps.
+        if (!isCurrent()) return;
+
+        // Clean up the previous page.
         window.destroyContactPage?.();
         window.destroyMapPage?.();
 
         mainContent.innerHTML = html;
+        window.applyTranslations?.(mainContent);
 
-// Translate the newly inserted HTML.
-        window.applyTranslations(mainContent);
-
-// Initialize the main map.
+        // Initialize the main map.
         if (document.getElementById("map-view")) {
             await ensureMapModuleLoaded();
-            await window.initMapPage();
+
+            if (isCurrent()) {
+                await window.initMapPage();
+            }
         }
-// Initialize the table
+
+        // Load table data.
         if (document.getElementById("objects-table-body")) {
-            void window.loadObjectsTableData();
+            window.loadObjectsTableData?.();
         }
 
-// Initialize the contact map.
+        // Initialize the contact map.
         if (document.getElementById("contact-map")) {
-
             if (document.readyState !== "complete") {
-                await new Promise((resolve) => {
-                    window.addEventListener("load", resolve, {
-                        once: true
-                    });
+                await new Promise(resolve => {
+                    window.addEventListener("load", resolve, { once: true });
                 });
             }
 
-            if (document.getElementById("contact-map")) {
+            if (isCurrent()) {
                 await window.initContactPage();
             }
         }
+
     } catch (error) {
-        if (error.name === "AbortError") {
-            return;
-        }
+        if (error.name === "AbortError" || !isCurrent()) return;
 
         console.error(error);
 
@@ -118,12 +113,11 @@ async function loadPage() {
             </p>
         `;
     } finally {
-        if (!currentRequest.signal.aborted) {
+        if (isCurrent()) {
             mainContent.removeAttribute("aria-busy");
         }
     }
 }
 
 window.addEventListener("hashchange", loadPage);
-
 loadPage();

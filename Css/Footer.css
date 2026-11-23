@@ -1,26 +1,29 @@
-.nonHyperLink{
-    text-decoration: none;
+.nonHyperLink {
     color: black;
+    text-decoration: none;
     transition: color 0.2s ease;
 }
 
-.nonHyperLink:hover{
+.nonHyperLink:hover {
     color: #333;
 }
 
-.footer{
+.footer {
     font-size: 13px;
     line-height: 1.5;
 }
 
-.footer.company-footer {
-    flex-shrink: 0;
-    position: static;
+.company-footer {
+    position: relative;
     width: 100%;
-    height: auto;
-    min-height: 0;
-    margin: 0;
-    padding: 12px 0;
+    flex-shrink: 0;
+    padding: 10px 0;
+}
+
+.company-footer {
+    position: relative;
+    width: 100%;
+    flex-shrink: 0;
 }
 
 .footer-socials img {
@@ -29,10 +32,7 @@
     height: 22px;
 }
 
-.bg-footer{
-    /*background: #C8E9FB;*/
-    /*background: linear-gradient(90deg, rgba(200, 233, 251, 1) 0%, rgba(251, 218, 200, 1) 100%);*/
-    background: #B3DEE5;
-    background: linear-gradient(180deg, rgba(179, 222, 229, 1) 0%, rgba(95, 130, 140, 1) 100%);
+.bg-footer {
+    background: linear-gradient(180deg, #B3DEE5 0%, #5F828C 100%);
     border-top: 1px solid #a3a3a3;
 }

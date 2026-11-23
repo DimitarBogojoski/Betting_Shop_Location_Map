@@ -1,88 +1,83 @@
+/* ====================================
+   OBJECT DATA
+==================================== */
+
+const OBJECTS_LAYER_URL =
+    "https://gisserver.gdi.mk/arcgis/rest/services/KLADILNICI/KLADILNICI_KAZINA_MK/MapServer/1";
+
+const BATCH_SIZE = 50;
+
+function normalizeField(value) {
+    return String(value ?? "")
+        .normalize("NFKC")
+        .toLowerCase()
+        .replace(/[\s_-]+/g, "");
+}
+
+
+/* ====================================
+   LOAD TABLE DATA
+==================================== */
+
 window.loadObjectsTableData = async function () {
     const tbody = document.getElementById("objects-table-body");
     const summary = document.getElementById("objects-table-summary");
     const exportButton = document.getElementById("export-objects");
     const pagination = document.getElementById("objects-pagination");
 
-    if (!tbody || !summary || !exportButton || !pagination) {
-        return;
-    }
-
-    const layerUrl =
-        "https://gisserver.gdi.mk/arcgis/rest/services/KLADILNICI/KLADILNICI_KAZINA_MK/MapServer/1";
-
-    summary.textContent = "Се вчитуваат податоците...";
-    exportButton.disabled = true;
-    pagination.replaceChildren();
-    tbody.replaceChildren();
+    if (!tbody || !summary || !exportButton || !pagination) return;
 
     let layer;
 
+    summary.textContent = "Се вчитуваат податоците...";
+    exportButton.disabled = true;
+    tbody.replaceChildren();
+    pagination.replaceChildren();
+
     try {
-        // Wait for the ArcGIS CDN loader on initial page load.
         if (document.readyState !== "complete") {
-            await new Promise((resolve) => {
-                window.addEventListener("load", resolve, { once: true });
-            });
+            await new Promise(resolve =>
+                window.addEventListener("load", resolve, { once: true })
+            );
         }
 
-        if (!tbody.isConnected) {
-            return;
-        }
+        if (!tbody.isConnected) return;
 
-        const [FeatureLayer, Graphic] = await $arcgis.import([
-            "@arcgis/core/layers/FeatureLayer.js",
-            "@arcgis/core/Graphic.js"
+        const [FeatureLayer] = await $arcgis.import([
+            "@arcgis/core/layers/FeatureLayer.js"
         ]);
 
-        layer = new FeatureLayer({
-            url: layerUrl
-        });
+        layer = new FeatureLayer({ url: OBJECTS_LAYER_URL });
 
         await layer.load();
 
-        function normalize(value) {
-            return String(value ?? "")
-                .normalize("NFKC")
-                .toLowerCase()
-                .replace(/[\s_-]+/g, "");
-        }
+        if (!tbody.isConnected) return;
 
-        function findField(candidates) {
-            const matches = candidates.map(normalize);
+        const findField = candidates => {
+            const names = new Set(candidates.map(normalizeField));
 
-            return layer.fields.find((field) =>
-                matches.includes(normalize(field.name)) ||
-                matches.includes(normalize(field.alias))
+            return layer.fields.find(field =>
+                names.has(normalizeField(field.name)) ||
+                names.has(normalizeField(field.alias))
             )?.name;
-        }
+        };
 
         const idField = layer.objectIdField;
 
         const nameField = findField([
-            "ИМЕ",
-            "IME",
-            "NAME",
-            "NAZIV",
-            "НАЗИВ"
+            "ИМЕ", "IME", "NAME", "NAZIV", "НАЗИВ"
         ]);
 
         const addressField = findField([
-            "АДРЕСА",
-            "ADRESA",
-            "ADDRESS",
-            "ADRES"
+            "АДРЕСА", "ADRESA", "ADDRESS", "ADRES"
         ]);
 
         if (!idField || !nameField || !addressField) {
             throw new Error(
-                "Не се пронајдени потребните полиња. " +
-                "Проверете ја листата со полиња во Console. " +
-                `ID: ${idField}, име: ${nameField}, адреса: ${addressField}`
+                `Missing fields: ID=${idField}, name=${nameField}, address=${addressField}`
             );
         }
 
-        // Get all matching IDs first, then retrieve records in small batches.
         const objectIds = await layer.queryObjectIds({
             where: "1=1"
         }) || [];
@@ -90,34 +85,23 @@ window.loadObjectsTableData = async function () {
         objectIds.sort((a, b) => a - b);
 
         const records = [];
-        const batchSize = 50;
 
-        async function fetchBatch(ids) {
+        for (let i = 0; i < objectIds.length; i += BATCH_SIZE) {
+            if (!tbody.isConnected) return;
+
             const result = await layer.queryFeatures({
-                objectIds: ids,
+                objectIds: objectIds.slice(i, i + BATCH_SIZE),
                 outFields: [idField, nameField, addressField],
                 returnGeometry: false
             });
 
-
-            return result.features.map((feature) => ({
+            records.push(...result.features.map(feature => ({
                 objectId: feature.attributes[idField],
                 name: feature.attributes[nameField],
                 address: feature.attributes[addressField]
-            }));
-        }
+            })));
 
-        for (let index = 0; index < objectIds.length; index += batchSize) {
-            if (!tbody.isConnected) {
-                return;
-            }
-
-            const ids = objectIds.slice(index, index + batchSize);
-            records.push(...await fetchBatch(ids));
-
-            if (!tbody.isConnected) {
-                return;
-            }
+            if (!tbody.isConnected) return;
 
             summary.textContent =
                 `Вчитани ${records.length} од ${objectIds.length} записи`;
@@ -128,21 +112,26 @@ window.loadObjectsTableData = async function () {
         if (tbody.isConnected) {
             window.initObjectsTable(records);
         }
+
     } catch (error) {
         console.error("Failed to load table data:", error);
 
-        if (!tbody.isConnected) {
-            return;
+        if (tbody.isConnected) {
+            summary.textContent =
+                "Грешка при вчитување на податоците. Проверете ја конзолата.";
+
+            exportButton.disabled = true;
         }
 
-        summary.textContent =
-            "Грешка при вчитување на податоците. Проверете ја конзолата.";
-
-        exportButton.disabled = true;
     } finally {
         layer?.destroy();
     }
 };
+
+
+/* ====================================
+   SELECT OBJECT ON MAP
+==================================== */
 
 let selectedTableGraphic = null;
 let selectedTableView = null;
@@ -157,6 +146,11 @@ window.selectObjectOnMap = async function (record) {
         return;
     }
 
+    const isCurrent = () =>
+        selectionId === tableSelectionId &&
+        window.objectsMapView === view &&
+        !view.destroyed;
+
     let layer;
 
     try {
@@ -165,17 +159,16 @@ window.selectObjectOnMap = async function (record) {
             "@arcgis/core/Graphic.js"
         ]);
 
-        if (selectionId !== tableSelectionId || view.destroyed) {
-            return;
-        }
+        if (!isCurrent()) return;
 
         layer = new FeatureLayer({
-            url:
-                "https://gisserver.gdi.mk/arcgis/rest/services/KLADILNICI/KLADILNICI_KAZINA_MK/MapServer/1"
+            url: OBJECTS_LAYER_URL
         });
 
         await layer.load();
         await view.when();
+
+        if (!isCurrent()) return;
 
         const result = await layer.queryFeatures({
             objectIds: [record.objectId],
@@ -184,22 +177,18 @@ window.selectObjectOnMap = async function (record) {
             outSpatialReference: view.spatialReference
         });
 
+        if (!isCurrent()) return;
+
         const sourceFeature = result.features[0];
 
         if (!sourceFeature?.geometry) {
-            throw new Error("The selected record has no map geometry.");
+            throw new Error("Selected record has no map geometry.");
         }
 
-// Remove the previous selection marker.
-        if (
-            selectedTableGraphic &&
-            selectedTableView &&
-            !selectedTableView.destroyed
-        ) {
+        if (selectedTableGraphic && selectedTableView && !selectedTableView.destroyed) {
             selectedTableView.graphics.remove(selectedTableGraphic);
         }
 
-// Create a standalone graphic.
         const feature = new Graphic({
             geometry: sourceFeature.geometry.clone(),
 
@@ -212,31 +201,17 @@ window.selectObjectOnMap = async function (record) {
 
             popupTemplate: {
                 title: "{tableName}",
-
-                content: [
-                    {
-                        type: "fields",
-
-                        fieldInfos: [
-                            {
-                                fieldName: "tableName",
-                                label: "Име"
-                            },
-                            {
-                                fieldName: "tableAddress",
-                                label: "Адреса"
-                            },
-                            {
-                                fieldName: "tableCity",
-                                label: "Град"
-                            }
-                        ]
-                    }
-                ]
+                content: [{
+                    type: "fields",
+                    fieldInfos: [
+                        { fieldName: "tableName", label: "Име" },
+                        { fieldName: "tableAddress", label: "Адреса" },
+                        { fieldName: "tableCity", label: "Град" }
+                    ]
+                }]
             }
         });
 
-// Draw the selected point clearly.
         if (feature.geometry.type === "point") {
             feature.symbol = {
                 type: "simple-marker",
@@ -254,7 +229,6 @@ window.selectObjectOnMap = async function (record) {
         selectedTableGraphic = feature;
         selectedTableView = view;
 
-        // Bring the map into view if the table is below the viewport.
         view.container.scrollIntoView({
             behavior: "smooth",
             block: "center"
@@ -262,35 +236,26 @@ window.selectObjectOnMap = async function (record) {
 
         view.closePopup();
 
-        if (feature.geometry.type === "point") {
-            await view.goTo({
-                target: feature.geometry,
-                zoom: 18
-            });
-        } else {
-            await view.goTo(feature.geometry);
-        }
+        await view.goTo(
+            feature.geometry.type === "point"
+                ? { target: feature.geometry, zoom: 18 }
+                : feature.geometry
+        );
 
-        if (
-            selectionId !== tableSelectionId ||
-            view.destroyed ||
-            window.objectsMapView !== view
-        ) {
-            return;
-        }
+        if (!isCurrent()) return;
 
         await view.openPopup({
             features: [feature],
-            location:
-                feature.geometry.type === "point"
-                    ? feature.geometry
-                    : feature.geometry.extent.center
+            location: feature.geometry.type === "point"
+                ? feature.geometry
+                : feature.geometry.extent.center
         });
+
     } catch (error) {
-        // A newer map movement can interrupt an earlier animation.
-        if (error.name !== "AbortError") {
+        if (error.name !== "AbortError" && isCurrent()) {
             console.error("Could not select the table object:", error);
         }
+
     } finally {
         layer?.destroy();
     }

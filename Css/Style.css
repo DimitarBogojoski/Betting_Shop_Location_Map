@@ -1,6 +1,15 @@
 :root {
     --font-primary: "Times New Roman", Times, serif;
-    --calcite-font-family: "Times New Roman", Times, serif;
+    --calcite-font-family: var(--font-primary);
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-height: 100dvh;
+    margin: 0;
+    background: linear-gradient(180deg, #FAE6B1 0%, #B3DEE5 100%);
 }
 
 body,
@@ -11,8 +20,7 @@ textarea,
 select,
 .nav-link,
 h3 {
-    font-family: var(--font-primary);
-    font-weight: 400;
+    font: 400 16px var(--font-primary);
 }
 
 h1,
@@ -21,15 +29,14 @@ h2 {
     font-weight: 700;
 }
 
-h1 {
-    font-size: 48px;
-}
-
-h2 {
-    font-size: 36px;
-}
+h1 { font-size: 48px; }
+h2 { font-size: 36px; }
 
 em,
 .italic {
     font-style: italic;
+}
+button,
+.btn {
+    font: inherit;
 }
