@@ -61,7 +61,7 @@ async function loadPage() {
         });
 
         if (!response.ok) {
-            throw new Error(`Failed to load ${file}: ${response.status}`);
+            new Error(`Failed to load ${file}: ${response.status}`);
         }
 
         const html = await response.text();

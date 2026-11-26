@@ -14,6 +14,15 @@ export function createElevationProfileWidget({sketch, createMapComponent, create
             }
         );
 
+    // Make the Elevation Profile popup more compact
+    Object.assign(elevationProfile.style, {
+        width: "340px",
+        maxWidth: "calc(100vw - 30px)",
+        maxHeight: "420px",
+        overflowY: "auto",
+        boxSizing: "border-box"
+    });
+
         const elevationExpand = createExpand({
             content: elevationProfile,
             icon: "measure",

@@ -204,7 +204,8 @@
         const pageObserver = new MutationObserver(scheduleUpdate);
 
         pageObserver.observe(mainContent, {
-            childList: true
+            childList: true,
+            subtree: true
         });
     }
 

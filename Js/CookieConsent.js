@@ -1,6 +1,6 @@
 
 (function () {
-    const STORAGE_KEY = "gdi_cookie_consent_v8";
+    const STORAGE_KEY = "gdi_cookie_consent_v4";
 
     let consent = null;
 
